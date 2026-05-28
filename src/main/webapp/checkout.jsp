@@ -315,7 +315,8 @@
 											<textarea class="form-control" id="textarea" name="textarea"
 												rows="4" placeholder="Ghi chú" >${note}</textarea>
 										</div>
-										<button class="btn btn-primary ">Xác nhận thanh toán</button>
+										<!-- <button class="btn btn-primary ">Xác nhận thanh toán</button> -->
+										<button type="button" class="btn btn-primary" onclick="openSignatureTool()">Xác nhận thanh toán</button>
 									</div>
 								</form>
 								<div class="checkbox alignright mt20">
@@ -495,6 +496,7 @@
 		</div>
 	</div>
 	</c:if>
+	<jsp:include page="signature-modal.jsp" />
 	<!-- /.footer -->
 	<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
 	<script src="js/jquery.min.js" type="text/javascript"></script>
