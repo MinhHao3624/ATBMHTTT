@@ -19,14 +19,14 @@ import com.projectttweb.webphone.model.User;
 @WebServlet("/VerifyServlet")
 public class VertifyController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-       
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
-    public VertifyController() {
-        super();
-        // TODO Auto-generated constructor stub
-    }
+
+	/**
+	 * @see HttpServlet#HttpServlet()
+	 */
+	public VertifyController() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
 
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
@@ -51,19 +51,19 @@ public class VertifyController extends HttpServlet {
 				UserDao userDao = new UserDao();
 				User us = userDao.selectById2(user);
 				if(us.getStatus() == 0) {
-				if(us.getAuthenticationCode().equals(maXacNhan)) {
-					us.setStatus(1);
-					if(userDao.updateVertifyInformation2(us) > 0) {
-						msg = "Chúc mừng bạn đã xác thực tài khoản thành công";
-						isXacThuc = true;
+					if(us.getAuthenticationCode().equals(maXacNhan)) {
+						us.setStatus(1);
+						if(userDao.updateVertifyInformation2(us) > 0) {
+							msg = "Chúc mừng bạn đã xác thực tài khoản thành công";
+							isXacThuc = true;
+						}
+					}else {
+						msg = "Mã xác nhận không chính xác. Hãy điền lại";
 					}
 				}else {
-					msg = "Mã xác nhận không chính xác. Hãy điền lại";
+					msg = "Bạn đã xác thực qua email rồi!!!";
+					isXacThuc = true;
 				}
-			}else {
-				msg = "Bạn đã xác thực qua email rồi!!!";
-				isXacThuc = true;
-			}
 			}
 			url = "/signup-form.jsp";
 			request.setAttribute("sourceServlet", "VertifyController");
@@ -95,7 +95,7 @@ public class VertifyController extends HttpServlet {
 					System.out.println(msg);
 					RequestDispatcher rd = getServletContext().getRequestDispatcher(url);
 					rd.forward(request, response);
-					
+
 				}else {
 					hd = "close";
 					msg = "Bạn đã xác thực tài khoản qua email rồi nha!!";
@@ -109,7 +109,7 @@ public class VertifyController extends HttpServlet {
 					rd.forward(request, response);
 				}
 			}
-			
+
 		}
 	}
 
