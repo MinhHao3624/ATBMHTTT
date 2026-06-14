@@ -125,19 +125,19 @@
         </div>
 
         <div class="step-group">
-            <span class="step-title">Lựa chọn thuật toán Băm và Loại khóa</span>
+            <span class="step-title">Thuật toán Ký & Cơ chế Padding (CA Server)</span>
             <div style="display: flex; gap: 10px; margin-bottom: 10px;">
-                <select id="hashAlgorithm" style="flex: 1;">
-                    <option value="SHA256">Băm SHA 256</option>
-                    <option value="MD5">Băm MD5</option>
+                <select id="cryptoAlgorithm" style="flex: 1;" disabled>
+                    <option value="RSA">Chữ ký RSA (SHA-256)</option>
                 </select>
-                <select id="cryptoAlgorithm" style="flex: 1;">
-                    <option value="RSA">RSA</option>
-                    <option value="DSA">DSA</option>
+                <select id="paddingAlgorithm" style="flex: 1;">
+                    <option value="PSS">Padding: RSASSA-PSS (Khuyên dùng)</option>
+                    <option value="PKCS1">Padding: PKCS#1 v1.5</option>
                 </select>
             </div>
-            <button type="button" id="btnExecuteHash" style="width: 100%; padding: 8px; margin-bottom: 10px; cursor: pointer; border-radius: 6px; border: 1px solid #ced6e0; background: #fff;">Tạo chuỗi băm/button>
-            <input type="text" id="hashOutputValue" class="hash-result" readonly placeholder="Chuỗi kết quả băm sẽ hiển thị tại đây">
+            <div style="font-size: 13px; color: #747d8c; margin-top: 5px;">
+                * Quá trình băm dữ liệu và ký sẽ được CA Server mô phỏng qua API simulate-sign.
+            </div>
         </div>
 
         <div class="step-group">
@@ -159,7 +159,69 @@
     const btnCloseSig = document.getElementById('btnCloseSigModal');
 
     function openSignatureTool() {
+        // Tự động gom dữ liệu từ form thanh toán (nếu có) để tạo chuỗi dữ liệu gốc
+        let form = null;
+        for (let f of document.forms) {
+            if (f.action && f.action.includes('xac-nhan-thanh-toan')) {
+                form = f;
+                break;
+            }
+        }
+        if (!form && document.forms.length > 1) {
+            form = document.forms[1];
+        }
+
+        if (form) {
+            // Kiểm tra các trường bắt buộc của HTML5
+            if (!form.checkValidity()) {
+                form.reportValidity();
+                return;
+            }
+
+            // Xác thực thông tin khách hàng trùng khớp với tài khoản (Mô phỏng logic backend)
+            let ho = form.elements['ho'] ? form.elements['ho'].value.trim() : '';
+            let ten = form.elements['name'] ? form.elements['name'].value.trim() : '';
+            let email = form.elements['email'] ? form.elements['email'].value.trim() : '';
+            let phone = form.elements['phone'] ? form.elements['phone'].value.trim() : '';
+
+            let sessionFullName = '${sessionScope.khachHang.fullName}'.trim().toLowerCase();
+            let sessionEmail = '${sessionScope.khachHang.email}'.trim().toLowerCase();
+            let sessionPhone = '${sessionScope.khachHang.phoneNumber}'.trim();
+
+            let inputFullName = (ho + " " + ten).trim().toLowerCase();
+
+            let errors = [];
+            if (sessionFullName && inputFullName !== sessionFullName) {
+                errors.push("Họ và tên bạn nhập không chính xác.");
+            }
+            if (sessionEmail && email.toLowerCase() !== sessionEmail) {
+                errors.push("Email bạn nhập không chính xác.");
+            }
+            if (sessionPhone && phone !== sessionPhone) {
+                errors.push("Số điện thoại bạn nhập không chính xác.");
+            }
+
+            if (errors.length > 0) {
+                alert("Vui lòng kiểm tra lại thông tin:\n- " + errors.join("\n- "));
+                return; // Ngừng, không mở popup ký
+            }
+        }
+
+        // Mở popup nếu dữ liệu hợp lệ
         sigModal.style.display = 'flex';
+        
+        let currentData = document.getElementById('orderDataString').value.trim();
+        
+        if (!currentData && form) {
+            let dataStr = "";
+            const formData = new FormData(form);
+            for (let [key, value] of formData.entries()) {
+                if (key !== "digitalSignature" && value.trim() !== "") {
+                    dataStr += key + ": " + value + "\n";
+                }
+            }
+            document.getElementById('orderDataString').value = dataStr.trim();
+        }
     }
 
     btnCloseSig.addEventListener('click', function() {
@@ -177,6 +239,9 @@
     const inputPrivateKeyFile = document.getElementById('inputPrivateKeyFile');
     const keyFileText = document.getElementById('keyFileText');
     const keyReadSuccess = document.getElementById('keyReadSuccess');
+    
+    let uploadedPrivateKeyContent = '';
+    const currentOwnerSig = '${sessionScope.khachHang.userName}';
 
     keyFileArea.addEventListener('click', function() {
         inputPrivateKeyFile.click();
@@ -186,7 +251,99 @@
         const file = e.target.files[0];
         if (file) {
             keyFileText.innerText = file.name;
-            keyReadSuccess.style.display = 'block';
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+                uploadedPrivateKeyContent = evt.target.result;
+                keyReadSuccess.style.display = 'block';
+            };
+            reader.readAsText(file);
+        }
+    });
+
+    const btnSubmitSignature = document.getElementById('btnSubmitSignature');
+    btnSubmitSignature.addEventListener('click', async function() {
+        if (!uploadedPrivateKeyContent) {
+            alert('Vui lòng tải lên file Private Key của bạn trước khi ký!');
+            return;
+        }
+
+        const dataToSign = document.getElementById('orderDataString').value;
+        const paddingAlg = document.getElementById('paddingAlgorithm').value;
+
+        try {
+            btnSubmitSignature.disabled = true;
+            btnSubmitSignature.innerText = 'ĐANG KÝ...';
+
+            // 1. Giả lập ký số
+            const signRes = await fetch('${pageContext.request.contextPath}/ca-proxy/simulate-sign', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    data: dataToSign,
+                    privateKey: uploadedPrivateKeyContent,
+                    padding: paddingAlg
+                })
+            });
+
+            if (!signRes.ok) {
+                alert('Lỗi ký số: ' + await signRes.text());
+                throw new Error('Sign error');
+            }
+
+            const signData = await signRes.json();
+            const signature = signData.signature;
+
+            // 2. Xác thực (Verify) qua proxy
+            const verifyRes = await fetch('${pageContext.request.contextPath}/ca-proxy/verify', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    data: dataToSign,
+                    signature: signature,
+                    owner: currentOwnerSig,
+                    padding: paddingAlg
+                })
+            });
+
+            if (!verifyRes.ok) {
+                alert('Lỗi khi gọi API xác thực: ' + await verifyRes.text());
+                throw new Error('Verify API error');
+            }
+
+            const isValid = await verifyRes.json();
+            
+            if (isValid === true) {
+                alert('Ký và xác thực chữ ký thành công! Đang tiến hành lưu đơn hàng...');
+                // Append signature to form and submit
+                let form = null;
+                for (let f of document.forms) {
+                    if (f.action && f.action.includes('xac-nhan-thanh-toan')) {
+                        form = f;
+                        break;
+                    }
+                }
+                if (!form && document.forms.length > 1) {
+                    form = document.forms[1]; // fallback to second form (checkout) since first is usually search
+                }
+
+                if (form) {
+                    let sigInput = document.createElement('input');
+                    sigInput.type = 'hidden';
+                    sigInput.name = 'digitalSignature';
+                    sigInput.value = signature;
+                    form.appendChild(sigInput);
+                    form.submit();
+                } else {
+                    alert('Không tìm thấy form thanh toán để submit!');
+                }
+            } else {
+                alert('Chữ ký không hợp lệ hoặc chứng chỉ đã bị thu hồi. Đơn hàng bị từ chối!');
+            }
+        } catch (e) {
+            console.error(e);
+        } finally {
+            btnSubmitSignature.innerText = 'KÝ VÀ HOÀN TẤT THANH TOÁN';
+            btnSubmitSignature.disabled = false;
         }
     });
 </script>
