@@ -54,11 +54,8 @@ public class XemChiTietDonHangControl extends HttpServlet {
 				}
 				Orders order = orderDAO.selectOrderByID2(orderID);
 				List<OrderDetails> lst = orderDetailDAO.getListOrderDetails2(orderID);
-				double tongTien = 0;
-				for (OrderDetails orderDetails : lst) {
-					tongTien += orderDetails.getUnitPrice();
-				}
-			    double tongThanhToan = tongTien + 50000;
+				double tongThanhToan = order.getTotalAmount();
+				double tongTien = tongThanhToan - 50000;
 			    ProductFavoriteDAO proFaDao = new ProductFavoriteDAO();
 			    int soLuongSanPhamLike = proFaDao.getSoLuong2(user.getUserID().trim());
 				ListOrderDetailsItem li = (ListOrderDetailsItem) session.getAttribute("listItem");
