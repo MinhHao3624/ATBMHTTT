@@ -30,7 +30,12 @@ public class OrdersDAO implements DAOInterface<Orders> {
 				double totalAmount = rs.getDouble("totalAmount");
 				String shippingAddress = rs.getString("shippingAddress");
 				String phone = rs.getString("phone");
-				Orders orders = new Orders(ordersID, date, userDAO.selectUserById(userID), status, totalAmount, shippingAddress, phone);
+				String signatureStatus = rs.getString("signatureStatus");
+				String digitalSignature = rs.getString("digitalSignature");
+				String publicKeyUsed = rs.getString("publicKeyUsed");
+				java.sql.Timestamp signatureDeadline = rs.getTimestamp("signatureDeadline");
+				if (signatureStatus == null) signatureStatus = "Chưa ký xác nhận";
+				Orders orders = new Orders(ordersID, date, userDAO.selectUserById(userID), status, totalAmount, shippingAddress, phone, signatureStatus, digitalSignature, publicKeyUsed, signatureDeadline);
 				res.add(orders);
 			}
 			JDBCUtil.closeConnection(con);
@@ -163,7 +168,12 @@ public class OrdersDAO implements DAOInterface<Orders> {
 				double totalAmount = rs.getDouble("totalAmount");
 				String shippingAddress = rs.getString("shippingAddress");
 				String phone = rs.getString("phone");
-				Orders orders2 = new Orders(ordersID, date, userDAO.selectUserById(userID), status, totalAmount, shippingAddress, phone);
+				String signatureStatus = rs.getString("signatureStatus");
+				String digitalSignature = rs.getString("digitalSignature");
+				String publicKeyUsed = rs.getString("publicKeyUsed");
+				java.sql.Timestamp signatureDeadline = rs.getTimestamp("signatureDeadline");
+				if (signatureStatus == null) signatureStatus = "Chưa ký xác nhận";
+				Orders orders2 = new Orders(ordersID, date, userDAO.selectUserById(userID), status, totalAmount, shippingAddress, phone, signatureStatus, digitalSignature, publicKeyUsed, signatureDeadline);
 				orders = orders2;
 				break;
 			}
@@ -180,7 +190,7 @@ public class OrdersDAO implements DAOInterface<Orders> {
 		int res = 0;
 		try {
 			Connection con = JDBCUtil.getConnection();
-			String sql = "INSERT INTO orders (ordersID, ordersDate, userID, status, totalAmount, shippingAddress, phone) VALUES (?,?,?,?,?,?,?)";
+			String sql = "INSERT INTO orders (ordersID, ordersDate, userID, status, totalAmount, shippingAddress, phone, signatureStatus, signatureDeadline) VALUES (?,?,?,?,?,?,?,?,DATE_ADD(?, INTERVAL 2 DAY))";
 			PreparedStatement stm = con.prepareStatement(sql);
 			stm.setString(1, order.getOrderID());
 			stm.setDate(2, order.getOrdersDate());
@@ -189,6 +199,8 @@ public class OrdersDAO implements DAOInterface<Orders> {
 			stm.setDouble(5, totalAmount);
 			stm.setString(6, diaChi);
 			stm.setString(7, phone);
+			stm.setString(8, "Chưa ký xác nhận");
+			stm.setDate(9, order.getOrdersDate());
 			res = stm.executeUpdate();
 			JDBCUtil.closeConnection(con);
 		} catch (Exception e) {
@@ -199,32 +211,34 @@ public class OrdersDAO implements DAOInterface<Orders> {
 	}
 
 	public ArrayList<Orders> getListOrdersByPage(String userID, String page) {
-		// TODO Auto-generated method stub
 		ArrayList<Orders> ans = new ArrayList<Orders>();
 		try {
-			ArrayList<Orders> lst = selectAll();
-			ArrayList<Orders> lstRevert = new ArrayList<Orders>();
-			ArrayList<Orders> lstReal = new ArrayList<Orders>();
-			for (int i = lst.size() - 1; i >= 0; i--) {
-				lstRevert.add(lst.get(i));
+			Connection con = JDBCUtil.getConnection();
+			String sql = "SELECT * FROM orders WHERE userID = ? ORDER BY ordersID DESC LIMIT 4 OFFSET ?";
+			PreparedStatement stm = con.prepareStatement(sql);
+			stm.setString(1, userID);
+			int pageNum = (page == null || page.isEmpty()) ? 1 : Integer.parseInt(page);
+			int offset = (pageNum - 1) * 4;
+			stm.setInt(2, offset);
+			ResultSet rs = stm.executeQuery();
+			UserDao userDAO = new UserDao();
+			while (rs.next()) {
+				String ordersID = rs.getString("ordersID");
+				java.sql.Date date = rs.getDate("ordersDate");
+				String status = rs.getString("status");
+				double totalAmount = rs.getDouble("totalAmount");
+				String shippingAddress = rs.getString("shippingAddress");
+				String phone = rs.getString("phone");
+				String signatureStatus = rs.getString("signatureStatus");
+				String digitalSignature = rs.getString("digitalSignature");
+				String publicKeyUsed = rs.getString("publicKeyUsed");
+				java.sql.Timestamp signatureDeadline = rs.getTimestamp("signatureDeadline");
+				if (signatureStatus == null) signatureStatus = "Chưa ký xác nhận";
+				Orders order = new Orders(ordersID, date, userDAO.selectUserById(userID), status, totalAmount, shippingAddress, phone, signatureStatus, digitalSignature, publicKeyUsed, signatureDeadline);
+				ans.add(order);
 			}
-			for (Orders orders : lstRevert) {
-				if(orders.getUser().getUserID().equalsIgnoreCase(userID.trim())) {
-					lstReal.add(orders);
-				}
-			}
-			int end = Integer.parseInt(page) * 4;
-			int start = end - 4;
-			int count = 0;
-			for (int i = start; i < lstReal.size(); i++) {
-				ans.add(lstRevert.get(i));
-				count++;
-				if(count == 4) {
-					break;
-				}
-			}
+			JDBCUtil.closeConnection(con);
 		} catch (Exception e) {
-			// TODO: handle exception
 			e.printStackTrace();
 		}
 		return ans;
@@ -393,7 +407,12 @@ public class OrdersDAO implements DAOInterface<Orders> {
 		    	double totalAmount = rs.getDouble("totalAmount");
 		    	String shippingAddress = rs.getString("shippingAddress");
 		    	String phone = rs.getString("phone");
-		    	Orders orders = new Orders(ordersID, date, userDAO.selectById3(userID2), status, totalAmount, shippingAddress, phone);
+				String signatureStatus = rs.getString("signatureStatus");
+				String digitalSignature = rs.getString("digitalSignature");
+				String publicKeyUsed = rs.getString("publicKeyUsed");
+				java.sql.Timestamp signatureDeadline = rs.getTimestamp("signatureDeadline");
+				if (signatureStatus == null) signatureStatus = "Chưa ký xác nhận";
+		    	Orders orders = new Orders(ordersID, date, userDAO.selectById3(userID2), status, totalAmount, shippingAddress, phone, signatureStatus, digitalSignature, publicKeyUsed, signatureDeadline);
 		    	lst.add(orders);
 		    }
 		    for (Orders orders : lst) {
@@ -407,5 +426,67 @@ public class OrdersDAO implements DAOInterface<Orders> {
 		return res;
 	}
 
+	public int updateSignatureData(String orderID, String signature, String publicKey) {
+		int res = 0;
+		try {
+			Connection con = JDBCUtil.getConnection();
+			String sql = "UPDATE orders SET signatureStatus = 'Đã ký xác nhận', digitalSignature = ?, publicKeyUsed = ? WHERE ordersID = ?";
+			PreparedStatement stm = con.prepareStatement(sql);
+			stm.setString(1, signature);
+			stm.setString(2, publicKey);
+			stm.setString(3, orderID);
+			res = stm.executeUpdate();
+			JDBCUtil.closeConnection(con);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return res;
+	}
+
+	public int revokeUserSignatures(String userID) {
+		int res = 0;
+		try {
+			Connection con = JDBCUtil.getConnection();
+			String sql = "UPDATE orders SET signatureStatus = 'Chưa ký xác nhận', digitalSignature = NULL, publicKeyUsed = NULL, signatureDeadline = DATE_ADD(NOW(), INTERVAL 2 DAY) WHERE userID = ? AND signatureStatus = 'Đã ký xác nhận'";
+			PreparedStatement stm = con.prepareStatement(sql);
+			stm.setString(1, userID);
+			res = stm.executeUpdate();
+			JDBCUtil.closeConnection(con);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return res;
+	}
+
+	public int resetSignatureStatus(String orderID) {
+		int res = 0;
+		try {
+			Connection con = JDBCUtil.getConnection();
+			String sql = "UPDATE orders SET signatureStatus = 'Chưa ký xác nhận', digitalSignature = NULL, publicKeyUsed = NULL, signatureDeadline = DATE_ADD(NOW(), INTERVAL 2 DAY) WHERE ordersID = ?";
+			PreparedStatement stm = con.prepareStatement(sql);
+			stm.setString(1, orderID);
+			res = stm.executeUpdate();
+			JDBCUtil.closeConnection(con);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return res;
+	}
 	
+	public int updateOrderStatus(String orderID, String status) {
+		int res = 0;
+		try {
+			Connection con = JDBCUtil.getConnection();
+			String sql = "UPDATE orders SET status = ? WHERE ordersID = ?";
+			PreparedStatement stm = con.prepareStatement(sql);
+			stm.setString(1, status);
+			stm.setString(2, orderID);
+			res = stm.executeUpdate();
+			JDBCUtil.closeConnection(con);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return res;
+	}
+
 }

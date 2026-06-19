@@ -15,13 +15,15 @@
     /* Dinh dang cho khung noi dung popup chinh */
     .modal-content {
         background: #ffffff;
-        width: 550px;
+        width: 420px;
         max-width: 90%;
-        border-radius: 12px;
-        padding: 30px;
+        border-radius: 10px;
+        padding: 18px 22px;
         box-shadow: 0 8px 30px rgba(0,0,0,0.3);
         position: relative;
         animation: animateslide 0.3s ease-out;
+        max-height: 90vh;
+        overflow-y: auto;
     }
 
     @keyframes animateslide {
@@ -44,26 +46,26 @@
     .modal-title {
         margin-top: 0;
         color: #2f3542;
-        font-size: 22px;
+        font-size: 16px;
         border-bottom: 2px solid #f1f2f6;
-        padding-bottom: 12px;
-        margin-bottom: 20px;
+        padding-bottom: 8px;
+        margin-bottom: 12px;
     }
 
     /* Dinh dang cho cac khoi tung buoc ben trong */
     .step-group {
-        margin-bottom: 20px;
-        padding: 15px;
+        margin-bottom: 10px;
+        padding: 10px;
         background: #f8f9fa;
-        border-radius: 8px;
+        border-radius: 6px;
         border: 1px solid #dfe4ea;
     }
     .step-title {
         font-weight: 600;
-        margin-bottom: 10px;
+        margin-bottom: 6px;
         display: block;
         color: #3742fa;
-        font-size: 14px;
+        font-size: 12px;
     }
 
     /* Dinh dang cho cac o nhap lieu va the lua chon */
@@ -78,18 +80,19 @@
         font-family: monospace;
         font-size: 13px;
     }
-    .modal-content textarea { resize: none; height: 70px; background: #fffaf0; }
+    .modal-content textarea { resize: none; height: 50px; background: #fffaf0; }
     .hash-result { background: #f1f9f5; color: #2ed573; font-weight: bold; }
 
     /* Dinh dang cho vung keo tha hoac chon file */
     .file-drop-area {
         border: 2px solid #70a1ff;
         border-radius: 6px;
-        padding: 20px;
+        padding: 10px;
         text-align: center;
         background: #ffffff;
         cursor: pointer;
         transition: 0.3s;
+        font-size: 12px;
     }
     .file-drop-area:hover { background: #f1f2f6; border-color: #3742fa; }
     .file-drop-area input { display: none; }
@@ -97,12 +100,12 @@
     /* Dinh dang cho nut bam thuc thi chinh */
     .btn-action {
         width: 100%;
-        padding: 14px;
+        padding: 10px;
         background-color: #2ed573;
         color: white;
         border: none;
         border-radius: 6px;
-        font-size: 16px;
+        font-size: 14px;
         font-weight: bold;
         cursor: pointer;
         transition: 0.2s;
@@ -111,7 +114,7 @@
     .btn-action:hover { background-color: #26de81; }
 
     /* Dinh dang cho dong chu thong bao trang thai thanh cong */
-    .text-success { color: #2ed573; font-size: 13px; margin-top: 8px; display: none; font-weight: 500;}
+    .sig-read-success { color: #2ed573; font-size: 13px; margin-top: 8px; display: none; font-weight: 500; }
 </style>
 
 <div class="modal-overlay" id="signatureToolModal">
@@ -135,18 +138,21 @@
                     <option value="PKCS1">Padding: PKCS#1 v1.5</option>
                 </select>
             </div>
-            <div style="font-size: 13px; color: #747d8c; margin-top: 5px;">
-                * Quá trình băm dữ liệu và ký sẽ được CA Server mô phỏng qua API simulate-sign.
-            </div>
         </div>
 
         <div class="step-group">
-            <span class="step-title">Tải file Private Key</span>
-            <div class="file-drop-area" id="keyFileArea">
+            <span class="step-title">Tải file Private Key và Public Key</span>
+            <div class="file-drop-area" id="keyFileArea" style="margin-bottom: 10px;">
                 <span id="keyFileText">Nhấp vào đây để chọn file private key</span>
                 <input type="file" id="inputPrivateKeyFile" accept=".txt,.pem,.key">
             </div>
-            <div id="keyReadSuccess" class="text-success">Đã đọc thành công Private key của bạn</div>
+            <div id="keyReadSuccess" class="sig-read-success">Đã đọc thành công Private key</div>
+            
+            <div class="file-drop-area" id="pubKeyFileArea">
+                <span id="pubKeyFileText">Nhấp vào đây để chọn file public key (BẮT BUỘC)</span>
+                <input type="file" id="inputPublicKeyFile" accept=".txt,.pem,.key,.pub">
+            </div>
+            <div id="pubKeyReadSuccess" class="sig-read-success">Đã đọc thành công Public key</div>
         </div>
 
         <button class="btn-action" id="btnSubmitSignature">Ký VÀ HOÀN TẤT THANH TOÁN</button>
@@ -234,13 +240,18 @@
         }
     });
 
-    /* Javascript co ban de cap nhat ten file hien thi khi nguoi dung chon file */
     const keyFileArea = document.getElementById('keyFileArea');
     const inputPrivateKeyFile = document.getElementById('inputPrivateKeyFile');
     const keyFileText = document.getElementById('keyFileText');
     const keyReadSuccess = document.getElementById('keyReadSuccess');
     
+    const pubKeyFileArea = document.getElementById('pubKeyFileArea');
+    const inputPublicKeyFile = document.getElementById('inputPublicKeyFile');
+    const pubKeyFileText = document.getElementById('pubKeyFileText');
+    const pubKeyReadSuccess = document.getElementById('pubKeyReadSuccess');
+    
     let uploadedPrivateKeyContent = '';
+    let uploadedPublicKeyContent = '';
     const currentOwnerSig = '${sessionScope.khachHang.userName}';
 
     keyFileArea.addEventListener('click', function() {
@@ -260,10 +271,29 @@
         }
     });
 
+    pubKeyFileArea.addEventListener('click', function() {
+        inputPublicKeyFile.click();
+    });
+
+    inputPublicKeyFile.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            pubKeyFileText.innerText = file.name;
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+                uploadedPublicKeyContent = evt.target.result;
+                pubKeyReadSuccess.style.display = 'block';
+            };
+            reader.readAsText(file);
+        }
+    });
+
     const btnSubmitSignature = document.getElementById('btnSubmitSignature');
+    btnSubmitSignature.innerText = 'KÝ ĐƠN HÀNG';
+    
     btnSubmitSignature.addEventListener('click', async function() {
-        if (!uploadedPrivateKeyContent) {
-            alert('Vui lòng tải lên file Private Key của bạn trước khi ký!');
+        if (!uploadedPrivateKeyContent || !uploadedPublicKeyContent) {
+            alert('Vui lòng tải lên ĐẦY ĐỦ file Private Key và Public Key của bạn trước khi ký!');
             return;
         }
 
@@ -313,39 +343,35 @@
             const isValid = await verifyRes.json();
             
             if (isValid === true) {
-                alert('Ký và xác thực chữ ký thành công! Đang tiến hành lưu đơn hàng...');
-                // Append signature to form and submit
-                let form = null;
-                for (let f of document.forms) {
-                    if (f.action && f.action.includes('xac-nhan-thanh-toan')) {
-                        form = f;
-                        break;
-                    }
+                // 3. Gửi thông tin về backend để lưu db
+                if(!window.currentSigningOrderID) {
+                    alert('Lỗi: Không xác định được mã đơn hàng để ký!');
+                    return;
                 }
-                if (!form && document.forms.length > 1) {
-                    form = document.forms[1]; // fallback to second form (checkout) since first is usually search
-                }
-
-                if (form) {
-                    let sigInput = document.createElement('input');
-                    sigInput.type = 'hidden';
-                    sigInput.name = 'digitalSignature';
-                    sigInput.value = signature;
-                    form.appendChild(sigInput);
-                    form.submit();
+                
+                const saveRes = await fetch('${pageContext.request.contextPath}/confirm-signature', {
+                	method: 'POST',
+                	headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                	body: new URLSearchParams({
+                		orderID: window.currentSigningOrderID,
+                		digitalSignature: signature,
+                		publicKey: uploadedPublicKeyContent
+                	})
+                });
+                if(saveRes.ok) {
+                	alert('Ký và xác thực chữ ký thành công!');
+                	location.reload(); // reload to show updated status
                 } else {
-                    alert('Không tìm thấy form thanh toán để submit!');
+                	alert('Lỗi lưu trữ chữ ký: ' + await saveRes.text());
                 }
             } else {
-                alert('Chữ ký không hợp lệ hoặc chứng chỉ đã bị thu hồi. Đơn hàng bị từ chối!');
+                alert('Chữ ký không hợp lệ hoặc chứng chỉ đã bị thu hồi. Từ chối ký!');
             }
         } catch (e) {
             console.error(e);
         } finally {
-            btnSubmitSignature.innerText = 'KÝ VÀ HOÀN TẤT THANH TOÁN';
+            btnSubmitSignature.innerText = 'KÝ ĐƠN HÀNG';
             btnSubmitSignature.disabled = false;
         }
     });
 </script>
-
-<button onclick="openSignatureTool()" style="margin: 50px; padding: 20px; font-size: 16px; cursor: pointer;">Bấm vào đây để test mở Popup</button>
