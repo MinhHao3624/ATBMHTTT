@@ -1,4 +1,4 @@
-<%@page import="java.util.ArrayList"%>
+﻿<%@page import="java.util.ArrayList"%>
 <%@page import="com.projectttweb.webphone.model.ProductFavorite"%>
 <%@page import="java.util.List"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
@@ -154,10 +154,10 @@
 							</c:if>
 							<c:if test="${not empty sessionScope.khachHang}">
 								<li><a
-									href="http://localhost:8080/MobileWebApp/account-login?userID=${sessionScope.khachHang.userID}"
+									href="${pageContext.request.contextPath}/account-login?userID=${sessionScope.khachHang.userID}"
 									class="title hidden-xs">Hi <c:out
 											value="${sessionScope.khachHang.userName}" /></a>|</li>
-								<li><a href="http://localhost:8080/MobileWebApp/dang-xuat"
+								<li><a href="${pageContext.request.contextPath}/dang-xuat"
 									class="title hidden-xs">Log out </a></li>
 								<li><a
 									href="load-page-favorite-list?userID=${sessionScope.khachHang.userID}"><i
@@ -182,7 +182,7 @@
 						<div id="navigation">
 							<ul>
 								<li class="active"><a href="LoadDataMain">Trang chủ</a></li>
-								<li><a href="http://localhost:8080/MobileWebApp/load-product?page=1">Điện thoại</a></li>
+								<li><a href="${pageContext.request.contextPath}/load-product?page=1">Điện thoại</a></li>
 								<li class="has-sub"><a href="load-accessories">Phụ kiện</a>
 									<ul>
 										<li><a href="load-accessories?type=op-lung&page=1">Ốp lưng - Bao da</a></li>
@@ -195,7 +195,7 @@
 								</li>
 								<li><a href="go-to-blog">Thông tin</a></li>
 								<li><a href="go-to-about">Bài viết</a></li>
-								<li><a href="http://localhost:8080/MobileWebApp/go-to-contactus">Liên hệ, hỗ trợ</a></li>
+								<li><a href="${pageContext.request.contextPath}/go-to-contactus">Liên hệ, hỗ trợ</a></li>
 							</ul>
 						</div>
 					</div>
@@ -272,7 +272,7 @@
 					</ul>
 				</div>
 			</div>
-			<a href="http://localhost:8080/MobileWebApp/load-product?page=1" class="btn-link"
+			<a href="${pageContext.request.contextPath}/load-product?page=1" class="btn-link"
 				style="display: block; margin-bottom: 20px">
 				<center>Trở về trang mua hàng</center>
 			</a>

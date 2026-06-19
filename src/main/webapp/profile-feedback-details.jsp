@@ -1,4 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
+﻿<%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
@@ -211,10 +211,10 @@
 							</c:if>
 							<c:if test="${not empty sessionScope.khachHang}">
 								<li><a
-									href="http://localhost:8080/MobileWebApp/account-login?userID=${sessionScope.khachHang.userID}"
+									href="${pageContext.request.contextPath}/account-login?userID=${sessionScope.khachHang.userID}"
 									class="title hidden-xs">Hi <c:out
 											value="${sessionScope.khachHang.userName}" /></a>|</li>
-								<li><a href="http://localhost:8080/MobileWebApp/dang-xuat"
+								<li><a href="${pageContext.request.contextPath}/dang-xuat"
 									class="title hidden-xs">Log out </a></li>
 								<li><a
 									href="load-page-favorite-list?userID=${sessionScope.khachHang.userID}"><i
@@ -239,7 +239,7 @@
 						<div id="navigation">
 							<ul>
 								<li class="active"><a href="LoadDataMain">Trang chủ</a></li>
-								<li><a href="http://localhost:8080/MobileWebApp/load-product?page=1">Điện thoại</a></li>
+								<li><a href="${pageContext.request.contextPath}/load-product?page=1">Điện thoại</a></li>
 								<li class="has-sub"><a href="load-accessories">Phụ kiện</a>
 									<ul>
 										<li><a href="load-accessories?type=op-lung&page=1">Ốp lưng - Bao da</a></li>
@@ -252,7 +252,7 @@
 								</li>
 								<li><a href="go-to-blog">Thông tin</a></li>
 								<li><a href="go-to-about">Bài viết</a></li>
-								<li><a href="http://localhost:8080/MobileWebApp/go-to-contactus">Liên hệ, hỗ trợ</a></li>
+								<li><a href="${pageContext.request.contextPath}/go-to-contactus">Liên hệ, hỗ trợ</a></li>
 							</ul>
 						</div>
 					</div>
@@ -291,7 +291,7 @@
 						<div class="side-bar-content">
 							<ul>
 								<a
-									href="http://localhost:8080/MobileWebApp/account-login?userID=${sessionScope.khachHang.userID}">
+									href="${pageContext.request.contextPath}/account-login?userID=${sessionScope.khachHang.userID}">
 									<li class="slide-bar "><i class="fa fa-edit"></i><span>Thông
 											tin tài khoản</span></li>
 								</a>
@@ -305,7 +305,7 @@
 										class="fas fa-money-check"></i><span>Số dư</span></li></a>
 								<!-- <a href="address-deliver.html"><li class="slide-bar"><i class="fas fa-map-marker-alt"></i><span> Địa chỉ nhận hàng</span></li></a> -->
 								<a
-									href="http://localhost:8080/MobileWebApp/profile-reset-password?userID=${sessionScope.khachHang.userID}">
+									href="${pageContext.request.contextPath}/profile-reset-password?userID=${sessionScope.khachHang.userID}">
 									<li class="slide-bar"><i class="fas fa-lock"></i><span>
 											Đổi mật khẩu</span></li>
 								</a>

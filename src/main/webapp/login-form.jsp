@@ -1,4 +1,4 @@
-<%@page import="com.projectttweb.webphone.util.NgonNguDAO"%>
+﻿<%@page import="com.projectttweb.webphone.util.NgonNguDAO"%>
 <%@page import="java.util.Map"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
@@ -279,10 +279,10 @@
 							</c:if>
 							<c:if test="${not empty sessionScope.khachHang}">
 								<li><a
-									href="http://localhost:8080/MobileWebApp/account-login?userID=${sessionScope.khachHang.userID}"
+									href="${pageContext.request.contextPath}/account-login?userID=${sessionScope.khachHang.userID}"
 									class="title hidden-xs">Hi <c:out
 											value="${sessionScope.khachHang.userName}" /></a>|</li>
-								<li><a href="http://localhost:8080/MobileWebApp/dang-xuat"
+								<li><a href="${pageContext.request.contextPath}/dang-xuat"
 									class="title hidden-xs">Log out </a></li>
 								<li><a
 									href="load-page-favorite-list?userID=${sessionScope.khachHang.userID}"><i
@@ -307,12 +307,12 @@
 						<div id="navigation">
 							<ul>
 								<li class="active"><a href="LoadDataMain"><%=m.get("Login.TrangChu")%></a></li>
-								<li><a href="http://localhost:8080/MobileWebApp/load-product?page=1"><%=m.get("Login.DienThoai")%>
+								<li><a href="${pageContext.request.contextPath}/load-product?page=1"><%=m.get("Login.DienThoai")%>
 								</a></li>
 								<li><a href="go-to-blog"><%=m.get("Login.ThongTin")%></a></li>
 								<li><a href="go-to-about"><%=m.get("Login.BaiViet")%></a></li>
 								<li><a
-									href="http://localhost:8080/MobileWebApp/go-to-contactus"><%=m.get("Login.LienHe")%></a></li>
+									href="${pageContext.request.contextPath}/go-to-contactus"><%=m.get("Login.LienHe")%></a></li>
 							</ul>
 						</div>
 					</div>

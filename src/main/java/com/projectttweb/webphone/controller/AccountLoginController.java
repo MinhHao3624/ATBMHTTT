@@ -82,10 +82,11 @@ public class AccountLoginController extends HttpServlet {
 					url = "/account.jsp";
 					RequestDispatcher rd = getServletContext().getRequestDispatcher(url);
 					rd.forward(request, response);
+					return;
 				}
 			}
 		}
-
+		response.sendRedirect(request.getContextPath() + "/login-form.jsp");
 	}
 
 	/**

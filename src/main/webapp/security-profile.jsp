@@ -166,7 +166,7 @@
 
     <div class="security-container">
         <div style="margin-bottom: 20px;">
-            <a href="http://localhost:8080/MobileWebApp/account-login?userID=${sessionScope.khachHang.userID}"
+            <a href="${pageContext.request.contextPath}/account-login?userID=${sessionScope.khachHang.userID}"
                 style="text-decoration: none; color: #2f3542; font-weight: bold; font-size: 14px; padding: 8px 15px; background-color: #f1f2f6; border-radius: 5px; transition: 0.2s;">
                 &#8592; Quay lại hồ sơ
             </a>
@@ -175,7 +175,7 @@
         <h2>Quản Lý Khoá Bảo Mật Chữ Ký Điện Tử</h2>
 
         <div class="sec-card">
-            <h3 class="sec-title">1 Thiet Lap Khoa Moi</h3>
+            <h3 class="sec-title">1 Tạo Khóa Mới</h3>
             <div class="sec-status status-none" id="keyStatusText">
                 Tài khoản chưa có cặp khóa bảo mật hoặc khóa đã bị hủy
             </div>
@@ -283,6 +283,16 @@
         let generatedPrivateKey = '';
         const currentOwner = '${sessionScope.khachHang.userName}'; // assuming userName holds the owner ID
 
+        // Initial load check
+        document.addEventListener('DOMContentLoaded', function() {
+            if (localStorage.getItem('ca_serial_number')) {
+                document.getElementById('keyStatusText').className = 'sec-status status-active';
+                document.getElementById('keyStatusText').innerText = 'Tài khoản của bạn đang được bảo vệ bằng chữ ký số';
+                btnGenerateKey.disabled = true;
+                btnGenerateKey.innerText = 'Đã có khóa (Hủy khóa để tạo mới)';
+            }
+        });
+
         btnGenerateKey.addEventListener('click', async function () {
             try {
                 btnGenerateKey.disabled = true;
@@ -317,6 +327,7 @@
                 
                 // Lưu serial number
                 localStorage.setItem('ca_serial_number', certData.serialNumber);
+                localStorage.setItem('ca_public_key', generatedPublicKey);
 
                 // Hien thi
                 downloadKeyArea.style.display = 'block';
@@ -340,12 +351,102 @@
             document.body.removeChild(element);
         }
 
+        const btnSendPubToMail = document.getElementById('btnSendPubToMail');
+        if(btnSendPubToMail) {
+            btnSendPubToMail.addEventListener('click', function() {
+                const storedPubKey = localStorage.getItem('ca_public_key');
+                if(!storedPubKey) {
+                    alert('Lỗi: Bạn chưa tạo khóa bảo vệ nào trên trình duyệt này!');
+                    return;
+                }
+                downloadFile('recovered_public_key.pem', storedPubKey);
+                alert('Đã tải thành công Public Key đang sử dụng!');
+            });
+        }
+
         btnDownloadPublicKey.addEventListener('click', function () {
             downloadFile('public_key.pem', generatedPublicKey);
         });
 
         btnDownloadPrivateKey.addEventListener('click', function () {
             downloadFile('private_key.pem', generatedPrivateKey);
+        });
+
+        // Tinh nang huy khoa
+        // Logic for Cập Nhật / Đổi Khóa (Section 2)
+        const btnUpdateKey = document.getElementById('btnUpdateKey');
+        btnUpdateKey.addEventListener('click', async function() {
+            const serial = localStorage.getItem('ca_serial_number');
+            if (!serial) {
+                alert("Bạn chưa có khóa bảo vệ nào để cập nhật!");
+                return;
+            }
+            if (!fileOldPri.files || fileOldPri.files.length === 0) {
+                alert("Vui lòng nạp Private Key cũ để chứng minh danh tính!");
+                return;
+            }
+
+            try {
+                btnUpdateKey.disabled = true;
+                btnUpdateKey.innerText = 'Đang xử lý...';
+
+                // 1. Thu hồi khóa cũ
+                const res = await fetch('${pageContext.request.contextPath}/ca-proxy/revoke/' + serial, {
+                    method: 'PATCH'
+                });
+                
+                if (!res.ok) {
+                    alert("Lỗi khi thu hồi khóa cũ: " + await res.text());
+                    return;
+                }
+
+                // Xóa khóa cũ khỏi localStorage
+                localStorage.removeItem('ca_serial_number');
+                localStorage.removeItem('ca_public_key');
+
+                alert("Đã thu hồi khóa cũ thành công! Đang tiến hành tạo khóa mới...");
+
+                // 2. Tạo khóa mới
+                const genRes = await fetch('${pageContext.request.contextPath}/ca-proxy/generate-key', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                const keyPair = await genRes.json();
+                generatedPublicKey = keyPair.publicKey;
+                generatedPrivateKey = keyPair.privateKey;
+
+                // 3. Đăng ký khóa mới
+                const regRes = await fetch('${pageContext.request.contextPath}/ca-proxy/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        owner: currentOwner,
+                        publicKey: generatedPublicKey
+                    })
+                });
+                
+                if (!regRes.ok) {
+                    throw new Error("Đăng ký khóa mới thất bại!");
+                }
+                
+                const certData = await regRes.json();
+                localStorage.setItem('ca_serial_number', certData.serialNumber);
+                localStorage.setItem('ca_public_key', generatedPublicKey);
+
+                alert("Tạo khóa mới thành công! Vui lòng tải khóa mới về.");
+                downloadKeyArea.style.display = 'block';
+                document.getElementById('keyStatusText').className = 'sec-status status-active';
+                document.getElementById('keyStatusText').innerText = 'Tài khoản của bạn đang được bảo vệ bằng chữ ký số';
+                btnGenerateKey.disabled = true;
+                btnGenerateKey.innerText = 'Đã có khóa (Hủy khóa để tạo mới)';
+
+            } catch(e) {
+                console.error(e);
+                alert("Lỗi: " + e.message);
+            } finally {
+                btnUpdateKey.disabled = false;
+                btnUpdateKey.innerText = 'Xác Thực & Tạo Khóa Mới';
+            }
         });
 
         // Tinh nang huy khoa
@@ -364,6 +465,7 @@
                     if(res.ok) {
                         alert("Đã hủy khóa thành công!");
                         localStorage.removeItem('ca_serial_number');
+                        localStorage.removeItem('ca_public_key');
                         location.reload();
                     } else {
                         alert("Lỗi khi hủy khóa: " + await res.text());

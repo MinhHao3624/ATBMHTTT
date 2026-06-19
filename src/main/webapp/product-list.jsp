@@ -1,4 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
+﻿<%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <!DOCTYPE html>
@@ -261,10 +261,10 @@ button[type="submit"] i {
 							</c:if>
 							<c:if test="${not empty sessionScope.khachHang}">
 								<li><a
-									href="http://localhost:8080/MobileWebApp/account-login?userID=${sessionScope.khachHang.userID}"
+									href="${pageContext.request.contextPath}/account-login?userID=${sessionScope.khachHang.userID}"
 									class="title hidden-xs">Hi <c:out
 											value="${sessionScope.khachHang.userName}" /></a>|</li>
-								<li><a href="http://localhost:8080/MobileWebApp/dang-xuat"
+								<li><a href="${pageContext.request.contextPath}/dang-xuat"
 									class="title hidden-xs">Log out </a></li>
 								<li><a href="load-page-favorite-list?userID=${sessionScope.khachHang.userID}"><i class="fa fa-heart"></i><sup class="cart-quantity">${soLuongSanPhamLike}</sup></a></li>
 								<li><a href="go-to-cart" class="title"><i
@@ -287,7 +287,7 @@ button[type="submit"] i {
 						<div id="navigation">
 							<ul>
 								<li class="active"><a href="LoadDataMain">Trang chủ</a></li>
-								<li><a href="http://localhost:8080/MobileWebApp/load-product?page=1">Điện thoại</a></li>
+								<li><a href="${pageContext.request.contextPath}/load-product?page=1">Điện thoại</a></li>
 								<li class="has-sub"><a href="load-accessories">Phụ kiện</a>
 									<ul>
 										<li><a href="load-accessories?type=op-lung&page=1">Ốp lưng - Bao da</a></li>
@@ -300,7 +300,7 @@ button[type="submit"] i {
 								</li>
 								<li><a href="go-to-blog">Thông tin</a></li>
 								<li><a href="go-to-about">Bài viết</a></li>
-								<li><a href="http://localhost:8080/MobileWebApp/go-to-contactus">Liên hệ, hỗ trợ</a></li>
+								<li><a href="${pageContext.request.contextPath}/go-to-contactus">Liên hệ, hỗ trợ</a></li>
 							</ul>
 						</div>
 					</div>
@@ -338,46 +338,46 @@ button[type="submit"] i {
 									<%-- <c:choose>
 										<c:when test="${sourceServlet == 'loadProductByOs'}"> --%>
 											<li><a
-												href="http://localhost:8080/MobileWebApp/load-product-by-os?os=Tatca&page=1"><input
+												href="${pageContext.request.contextPath}/load-product-by-os?os=Tatca&page=1"><input
 													type="radio" name="radio"
 													<c:if test="${nameRadio == 'Tatca'}">checked</c:if>>
 													<span class="checkbox-list">Tất cả</span></a></li>
 											<li><a
-												href="http://localhost:8080/MobileWebApp/load-product-by-os?os=Android&page=1"><input
+												href="${pageContext.request.contextPath}/load-product-by-os?os=Android&page=1"><input
 													type="radio" name="radio"
 													<c:if test="${nameRadio == 'Android'}">checked</c:if>>
 													<span class="checkbox-list">Android</span></a></li>
 											<li><a
-												href="http://localhost:8080/MobileWebApp/load-product-by-os?os=IOS&page=1"><input
+												href="${pageContext.request.contextPath}/load-product-by-os?os=IOS&page=1"><input
 													type="radio" name="radio"
 													<c:if test="${nameRadio == 'IOS'}">checked</c:if>>
 													<span class="checkbox-list">IOS</span> </a></li>
 										<%-- </c:when> --%>
 										<%-- <c:when test="${sourceServlet == 'loadProduct'}"> --%>
 											<li><a
-												href="http://localhost:8080/MobileWebApp/load-product-by-os?os=Tatca&page=1"><input
+												href="${pageContext.request.contextPath}/load-product-by-os?os=Tatca&page=1"><input
 													type="radio" name="radio"> <span
 													class="checkbox-list">Tất cả</span></a></li>
 											<li><a
-												href="http://localhost:8080/MobileWebApp/load-product-by-os?os=Android&page=1"><input
+												href="${pageContext.request.contextPath}/load-product-by-os?os=Android&page=1"><input
 													type="radio" name="radio"> <span
 													class="checkbox-list">Android</span></a></li>
 											<li><a
-												href="http://localhost:8080/MobileWebApp/load-product-by-os?os=IOS&page=1"><input
+												href="${pageContext.request.contextPath}/load-product-by-os?os=IOS&page=1"><input
 													type="radio" name="radio"> <span
 													class="checkbox-list">IOS</span> </a></li>
 										<%-- </c:when> --%>
 										<%-- <c:when test="${sourceServlet == 'loadProductByCategories'}"> --%>
 											<li><a
-												href="http://localhost:8080/MobileWebApp/load-product-by-os?os=Tatca&page=1"><input
+												href="${pageContext.request.contextPath}/load-product-by-os?os=Tatca&page=1"><input
 													type="radio" name="radio"> <span
 													class="checkbox-list">Tất cả</span></a></li>
 											<li><a
-												href="http://localhost:8080/MobileWebApp/load-product-by-os?os=Android&page=1"><input
+												href="${pageContext.request.contextPath}/load-product-by-os?os=Android&page=1"><input
 													type="radio" name="radio"> <span
 													class="checkbox-list">Android</span></a></li>
 											<li><a
-												href="http://localhost:8080/MobileWebApp/load-product-by-os?os=IOS&page=1"><input
+												href="${pageContext.request.contextPath}/load-product-by-os?os=IOS&page=1"><input
 													type="radio" name="radio"> <span
 													class="checkbox-list">IOS</span> </a></li>
 										<%-- </c:when>
@@ -386,48 +386,48 @@ button[type="submit"] i {
 							<li class='has-sub'><a href='#'>Hãng sản xuất</a>
 								<ul>
 									<li><label><a
-											href="http://localhost:8080/MobileWebApp/load-product-by-categories?categories=Tatca&page=1"><input
+											href="${pageContext.request.contextPath}/load-product-by-categories?categories=Tatca&page=1"><input
 												type="radio" name="radio"
 												<c:if test="${nameRadio == 'Tatca'}">checked</c:if>>
 												<span class="checkbox-list">Tất cả </span></a> </label></li>
 									<li><label><a
-											href="http://localhost:8080/MobileWebApp/load-product-by-categories?categories=Samsung&page=1"><input
+											href="${pageContext.request.contextPath}/load-product-by-categories?categories=Samsung&page=1"><input
 												type="radio" name="radio"
 												<c:if test="${nameRadio == 'Samsung'}">checked</c:if>>
 												<span class="checkbox-list">Samsung</span></a> </label></li>
 									<li><label><a
-											href="http://localhost:8080/MobileWebApp/load-product-by-categories?categories=Apple&page=1"><input
+											href="${pageContext.request.contextPath}/load-product-by-categories?categories=Apple&page=1"><input
 												type="radio" name="radio"
 												<c:if test="${nameRadio == 'Apple'}">checked</c:if>>
 												<span class="checkbox-list">Apple</span></a> </label></li>
 									<li><label><a
-											href="http://localhost:8080/MobileWebApp/load-product-by-categories?categories=Xiaomi&page=1"><input
+											href="${pageContext.request.contextPath}/load-product-by-categories?categories=Xiaomi&page=1"><input
 												type="radio" name="radio"
 												<c:if test="${nameRadio == 'Xiaomi'}">checked</c:if>>
 												<span class="checkbox-list">Xiaomi</span></a> </label></li>
 									<li><label><a
-											href="http://localhost:8080/MobileWebApp/load-product-by-categories?categories=Vsmart&page=1"><input
+											href="${pageContext.request.contextPath}/load-product-by-categories?categories=Vsmart&page=1"><input
 												type="radio" name="radio"
 												<c:if test="${nameRadio == 'Vsmart'}">checked</c:if>>
 												<span class="checkbox-list">Vsmart</span></a> </label></li>
 									<li><label><a
-											href="http://localhost:8080/MobileWebApp/load-product-by-categories?categories=OPPO&page=1"><input
+											href="${pageContext.request.contextPath}/load-product-by-categories?categories=OPPO&page=1"><input
 												type="radio" name="radio"
 												<c:if test="${nameRadio == 'OPPO'}">checked</c:if>>
 												<span class="checkbox-list">OPPO</span></a> </label></li>
 									<li><label><a
-											href="http://localhost:8080/MobileWebApp/load-product-by-categories?categories=Vivo&page=1"><input
+											href="${pageContext.request.contextPath}/load-product-by-categories?categories=Vivo&page=1"><input
 												type="radio" name="radio"
 												<c:if test="${nameRadio == 'Vivo'}">checked</c:if>>
 												<span class="checkbox-list">Vivo</span></a> </label></li>
 									<li><label><a
-											href="http://localhost:8080/MobileWebApp/load-product-by-categories?categories=Nokia&page=1">
+											href="${pageContext.request.contextPath}/load-product-by-categories?categories=Nokia&page=1">
 												<input type="radio" name="radio"
 												<c:if test="${nameRadio == 'Nokia'}">checked</c:if>>
 												<span class="checkbox-list">Nokia</span>
 										</a> </label></li>
 									<li><label><a
-											href="http://localhost:8080/MobileWebApp/load-product-by-categories?categories=Huawei&page=1"><input
+											href="${pageContext.request.contextPath}/load-product-by-categories?categories=Huawei&page=1"><input
 												type="radio" name="radio"
 												<c:if test="${nameRadio == 'Huawei'}">checked</c:if>>
 												<span class="checkbox-list">Huawei</span></a> </label></li>
@@ -435,33 +435,33 @@ button[type="submit"] i {
 							<li class='has-sub'><a href='#'>Giá Bán</a>
 								<ul>
 									<li><label><a
-											href="http://localhost:8080/MobileWebApp/load-product-by-price?price=Tatca&page=1"><input
+											href="${pageContext.request.contextPath}/load-product-by-price?price=Tatca&page=1"><input
 												type="radio" name="radio"
 												<c:if test="${nameRadio == 'Tatca'}">checked</c:if>>
 												<span class="checkbox-list">Tất cả</span></a> </label></li>
 									<li><label><a
-											href="http://localhost:8080/MobileWebApp/load-product-by-price?price=duoihaitrieu&page=1"><input
+											href="${pageContext.request.contextPath}/load-product-by-price?price=duoihaitrieu&page=1"><input
 												type="radio" name="radio"
 												<c:if test="${nameRadio == 'duoihaitrieu'}">checked</c:if>>
 												<span class="checkbox-list">Dưới 2 triệu</span></a> </label></li>
 									<li><label><a
-											href="http://localhost:8080/MobileWebApp/load-product-by-price?price=tuhaidennamtrieu&page=1"><input
+											href="${pageContext.request.contextPath}/load-product-by-price?price=tuhaidennamtrieu&page=1"><input
 												type="radio" name="radio"
 												<c:if test="${nameRadio == 'tuhaidennamtrieu'}">checked</c:if>>
 												<span class="checkbox-list">Từ 2 - 5 triệu</span></a> </label></li>
 									<li><label><a
-											href="http://localhost:8080/MobileWebApp/load-product-by-price?price=tunamdenmuoitrieu&page=1"><input
+											href="${pageContext.request.contextPath}/load-product-by-price?price=tunamdenmuoitrieu&page=1"><input
 												type="radio" name="radio"
 												<c:if test="${nameRadio == 'tunamdenmuoitrieu'}">checked</c:if>>
 												<span class="checkbox-list">Từ 5 - 10 triệu</span></a> </label></li>
 
 									<li><label><a
-											href="http://localhost:8080/MobileWebApp/load-product-by-price?price=tumuoidenmuoilamtrieu&page=1"><input
+											href="${pageContext.request.contextPath}/load-product-by-price?price=tumuoidenmuoilamtrieu&page=1"><input
 												type="radio" name="radio"
 												<c:if test="${nameRadio == 'tumuoidenmuoilamtrieu'}">checked</c:if>>
 												<span class="checkbox-list">Từ 10 - 15 triệu</span></a> </label></li>
 									<li><label><a
-											href="http://localhost:8080/MobileWebApp/load-product-by-price?price=trenmuoilamtrieu&page=1"><input
+											href="${pageContext.request.contextPath}/load-product-by-price?price=trenmuoilamtrieu&page=1"><input
 												type="radio" name="radio"
 												<c:if test="${nameRadio == 'trenmuoilamtrieu'}">checked</c:if>>
 												<span class="checkbox-list">Trên 15 triệu</span></a> </label></li>
@@ -470,17 +470,17 @@ button[type="submit"] i {
 							<li class='has-sub'><a href='#'>Màn hình</a>
 								<ul>
 									<li><label><a
-											href="http://localhost:8080/MobileWebApp/load-product-by-screen?screen=Tatca&page=1"><input
+											href="${pageContext.request.contextPath}/load-product-by-screen?screen=Tatca&page=1"><input
 												type="radio" name="radio"
 												<c:if test="${nameRadio == 'Tatca'}">checked</c:if>>
 												<span class="checkbox-list">Tất cả</span></a> </label></li>
 									<li><label><a
-											href="http://localhost:8080/MobileWebApp/load-product-by-screen?screen=duoi5.0inch&page=1"><input
+											href="${pageContext.request.contextPath}/load-product-by-screen?screen=duoi5.0inch&page=1"><input
 												type="radio" name="radio"
 												<c:if test="${nameRadio == 'duoi5.0inch'}">checked</c:if>>
 												<span class="checkbox-list">Dưới 5.0 inch</span></a> </label></li>
 									<li><label><a
-											href="http://localhost:8080/MobileWebApp/load-product-by-screen?screen=tren6.0inch&page=1"><input
+											href="${pageContext.request.contextPath}/load-product-by-screen?screen=tren6.0inch&page=1"><input
 												type="radio" name="radio"
 												<c:if test="${nameRadio == 'tren6.0inch'}">checked</c:if>>
 												<span class="checkbox-list">Trên 6.0 inch</span></a> </label></li>
@@ -488,27 +488,27 @@ button[type="submit"] i {
 							<li class='has-sub'><a href='#'>Bộ nhớ trong</a>
 								<ul>
 									<li><label><a
-											href="http://localhost:8080/MobileWebApp/load-product-by-memory?memory=Tatca&page=1"><input
+											href="${pageContext.request.contextPath}/load-product-by-memory?memory=Tatca&page=1"><input
 												type="radio" name="radio"
 												<c:if test="${nameRadio == 'Tatca'}">checked</c:if>>
 												<span class="checkbox-list">Tất cả</span></a> </label></li>
 									<li><label><a
-											href="http://localhost:8080/MobileWebApp/load-product-by-memory?memory=duoi32GB&page=1"><input
+											href="${pageContext.request.contextPath}/load-product-by-memory?memory=duoi32GB&page=1"><input
 												type="radio" name="radio"
 												<c:if test="${nameRadio == 'duoi32GB'}">checked</c:if>>
 												<span class="checkbox-list">Dưới 32GB</span></a> </label></li>
 									<li><label><a
-											href="http://localhost:8080/MobileWebApp/load-product-by-memory?memory=64GB128GB&page=1"><input
+											href="${pageContext.request.contextPath}/load-product-by-memory?memory=64GB128GB&page=1"><input
 												type="radio" name="radio"
 												<c:if test="${nameRadio == '64GB128GB'}">checked</c:if>>
 												<span class="checkbox-list">64GB và 128GB</span></a> </label></li>
 									<li><label><a
-											href="http://localhost:8080/MobileWebApp/load-product-by-memory?memory=256GB512GB&page=1"><input
+											href="${pageContext.request.contextPath}/load-product-by-memory?memory=256GB512GB&page=1"><input
 												type="radio" name="radio"
 												<c:if test="${nameRadio == '256GB512GB'}">checked</c:if>>
 												<span class="checkbox-list">256GB và 512GB</span></a> </label></li>
 									<li><label><a
-											href="http://localhost:8080/MobileWebApp/load-product-by-memory?memory=tren512GB&page=1"><input
+											href="${pageContext.request.contextPath}/load-product-by-memory?memory=tren512GB&page=1"><input
 												type="radio" name="radio"
 												<c:if test="${nameRadio == 'tren512GB'}">checked</c:if>>
 												<span class="checkbox-list">Trên 512GB</span></a> </label></li>
@@ -970,16 +970,16 @@ button[type="submit"] i {
 									<div class="st-pagination">
 										<ul class="pagination">
 											<li><a
-												href="http://localhost:8080/MobileWebApp/load-product?page=${currentPage == 1? tongSoTrang: currentPage - 1}"
+												href="${pageContext.request.contextPath}/load-product?page=${currentPage == 1? tongSoTrang: currentPage - 1}"
 												aria-label="previous"><i class="fa fa-angle-left"
 													style="font-size: 16px;"></i></a> <!-- Dùng JSTL để lặp qua các trang -->
 												<c:forEach var="i" begin="1" end="${tongSoTrang}">
 													<li class="${currentPage == i ? 'active' : ''}"><a
-														href="http://localhost:8080/MobileWebApp/load-product?page=${i}"
+														href="${pageContext.request.contextPath}/load-product?page=${i}"
 														onclick="setActive(this)">${i}</a></li>
 												</c:forEach>
 											<li><a
-												href="http://localhost:8080/MobileWebApp/load-product?page=${currentPage == tongSoTrang? 1: currentPage + 1}"
+												href="${pageContext.request.contextPath}/load-product?page=${currentPage == tongSoTrang? 1: currentPage + 1}"
 												aria-label="Next"><i class="fa fa-angle-right"
 													style="font-size: 16px;"></i></li>
 										</ul>
@@ -991,16 +991,16 @@ button[type="submit"] i {
 									<div class="st-pagination">
 										<ul class="pagination">
 											<li><a
-												href="http://localhost:8080/MobileWebApp/load-product-by-os?os=${nameRadio}&page=${currentPage == 1? tongSoTrang: currentPage -1}"
+												href="${pageContext.request.contextPath}/load-product-by-os?os=${nameRadio}&page=${currentPage == 1? tongSoTrang: currentPage -1}"
 												aria-label="previous"><i class="fa fa-angle-left"
 													style="font-size: 16px;"></i></a> <!-- Dùng JSTL để lặp qua các trang -->
 												<c:forEach var="i" begin="1" end="${tongSoTrang}">
 													<li class="${currentPage == i ? 'active' : ''}"><a
-														href="http://localhost:8080/MobileWebApp/load-product-by-os?os=${nameRadio}&page=${i}"
+														href="${pageContext.request.contextPath}/load-product-by-os?os=${nameRadio}&page=${i}"
 														onclick="setActive(this)">${i}</a></li>
 												</c:forEach>
 											<li><a
-												href="http://localhost:8080/MobileWebApp/load-product-by-os?os=${nameRadio}&page=${currentPage == tongSoTrang? 1: currentPage +1}"
+												href="${pageContext.request.contextPath}/load-product-by-os?os=${nameRadio}&page=${currentPage == tongSoTrang? 1: currentPage +1}"
 												aria-label="Next"><i class="fa fa-angle-right"
 													style="font-size: 16px;"></i></li>
 										</ul>
@@ -1012,16 +1012,16 @@ button[type="submit"] i {
 									<div class="st-pagination">
 										<ul class="pagination">
 											<li><a
-												href="http://localhost:8080/MobileWebApp/load-product-by-categories?categories=${nameRadio}&page=${currentPage == 1? tongSoTrang: currentPage -1}"
+												href="${pageContext.request.contextPath}/load-product-by-categories?categories=${nameRadio}&page=${currentPage == 1? tongSoTrang: currentPage -1}"
 												aria-label="previous"><i class="fa fa-angle-left"
 													style="font-size: 16px;"></i></a> <!-- Dùng JSTL để lặp qua các trang -->
 												<c:forEach var="i" begin="1" end="${tongSoTrang}">
 													<li class="${currentPage == i ? 'active' : ''}"><a
-														href="http://localhost:8080/MobileWebApp/load-product-by-categories?categories=${nameRadio}&page=${i}"
+														href="${pageContext.request.contextPath}/load-product-by-categories?categories=${nameRadio}&page=${i}"
 														onclick="setActive(this)">${i}</a></li>
 												</c:forEach>
 											<li><a
-												href="http://localhost:8080/MobileWebApp/load-product-by-categories?categories=${nameRadio}&page=${currentPage == tongSoTrang? 1: currentPage +1}"
+												href="${pageContext.request.contextPath}/load-product-by-categories?categories=${nameRadio}&page=${currentPage == tongSoTrang? 1: currentPage +1}"
 												aria-label="Next"><i class="fa fa-angle-right"
 													style="font-size: 16px;"></i></li>
 										</ul>
@@ -1033,16 +1033,16 @@ button[type="submit"] i {
 									<div class="st-pagination">
 										<ul class="pagination">
 											<li><a
-												href="http://localhost:8080/MobileWebApp/load-product-by-price?price=${nameRadio}&page=${currentPage == 1? tongSoTrang: currentPage -1}"
+												href="${pageContext.request.contextPath}/load-product-by-price?price=${nameRadio}&page=${currentPage == 1? tongSoTrang: currentPage -1}"
 												aria-label="previous"><i class="fa fa-angle-left"
 													style="font-size: 16px;"></i></a> <!-- Dùng JSTL để lặp qua các trang -->
 												<c:forEach var="i" begin="1" end="${tongSoTrang}">
 													<li class="${currentPage == i ? 'active' : ''}"><a
-														href="http://localhost:8080/MobileWebApp/load-product-by-price?price=${nameRadio}&page=${i}"
+														href="${pageContext.request.contextPath}/load-product-by-price?price=${nameRadio}&page=${i}"
 														onclick="setActive(this)">${i}</a></li>
 												</c:forEach>
 											<li><a
-												href="http://localhost:8080/MobileWebApp/load-product-by-price?price=${nameRadio}&page=${currentPage == tongSoTrang? 1: currentPage +1}"
+												href="${pageContext.request.contextPath}/load-product-by-price?price=${nameRadio}&page=${currentPage == tongSoTrang? 1: currentPage +1}"
 												aria-label="Next"><i class="fa fa-angle-right"
 													style="font-size: 16px;"></i></li>
 										</ul>
@@ -1054,16 +1054,16 @@ button[type="submit"] i {
 									<div class="st-pagination">
 										<ul class="pagination">
 											<li><a
-												href="http://localhost:8080/MobileWebApp/load-product-by-screen?screen=${nameRadio}&page=${currentPage == 1? tongSoTrang: currentPage -1}"
+												href="${pageContext.request.contextPath}/load-product-by-screen?screen=${nameRadio}&page=${currentPage == 1? tongSoTrang: currentPage -1}"
 												aria-label="previous"><i class="fa fa-angle-left"
 													style="font-size: 16px;"></i></a> <!-- Dùng JSTL để lặp qua các trang -->
 												<c:forEach var="i" begin="1" end="${tongSoTrang}">
 													<li class="${currentPage == i ? 'active' : ''}"><a
-														href="http://localhost:8080/MobileWebApp/load-product-by-screen?screen=${nameRadio}&page=${i}"
+														href="${pageContext.request.contextPath}/load-product-by-screen?screen=${nameRadio}&page=${i}"
 														onclick="setActive(this)">${i}</a></li>
 												</c:forEach>
 											<li><a
-												href="http://localhost:8080/MobileWebApp/load-product-by-screen?screen=${nameRadio}&page=${currentPage == tongSoTrang? 1: currentPage +1}"
+												href="${pageContext.request.contextPath}/load-product-by-screen?screen=${nameRadio}&page=${currentPage == tongSoTrang? 1: currentPage +1}"
 												aria-label="Next"><i class="fa fa-angle-right"
 													style="font-size: 16px;"></i></li>
 										</ul>
@@ -1075,16 +1075,16 @@ button[type="submit"] i {
 									<div class="st-pagination">
 										<ul class="pagination">
 											<li><a
-												href="http://localhost:8080/MobileWebApp/load-product-by-memory?memory=${nameRadio}&page=${currentPage == 1? tongSoTrang: currentPage -1}"
+												href="${pageContext.request.contextPath}/load-product-by-memory?memory=${nameRadio}&page=${currentPage == 1? tongSoTrang: currentPage -1}"
 												aria-label="previous"><i class="fa fa-angle-left"
 													style="font-size: 16px;"></i></a> <!-- Dùng JSTL để lặp qua các trang -->
 												<c:forEach var="i" begin="1" end="${tongSoTrang}">
 													<li class="${currentPage == i ? 'active' : ''}"><a
-														href="http://localhost:8080/MobileWebApp/load-product-by-memory?memory=${nameRadio}&page=${i}"
+														href="${pageContext.request.contextPath}/load-product-by-memory?memory=${nameRadio}&page=${i}"
 														onclick="setActive(this)">${i}</a></li>
 												</c:forEach>
 											<li><a
-												href="http://localhost:8080/MobileWebApp/load-product-by-memory?memory=${nameRadio}&page=${currentPage == tongSoTrang? 1: currentPage +1}"
+												href="${pageContext.request.contextPath}/load-product-by-memory?memory=${nameRadio}&page=${currentPage == tongSoTrang? 1: currentPage +1}"
 												aria-label="Next"><i class="fa fa-angle-right"
 													style="font-size: 16px;"></i></li>
 										</ul>
@@ -1096,16 +1096,16 @@ button[type="submit"] i {
 									<div class="st-pagination">
 										<ul class="pagination">
 											<li><a
-												href="http://localhost:8080/MobileWebApp/load-product-by-option?list-option=${nameOption}&page=${currentPage == 1? tongSoTrang: currentPage -1}"
+												href="${pageContext.request.contextPath}/load-product-by-option?list-option=${nameOption}&page=${currentPage == 1? tongSoTrang: currentPage -1}"
 												aria-label="previous"><i class="fa fa-angle-left"
 													style="font-size: 16px;"></i></a> <!-- Dùng JSTL để lặp qua các trang -->
 												<c:forEach var="i" begin="1" end="${tongSoTrang}">
 													<li class="${currentPage == i ? 'active' : ''}"><a
-														href="http://localhost:8080/MobileWebApp/load-product-by-option?list-option=${nameOption}&page=${i}"
+														href="${pageContext.request.contextPath}/load-product-by-option?list-option=${nameOption}&page=${i}"
 														onclick="setActive(this)">${i}</a></li>
 												</c:forEach>
 											<li><a
-												href="http://localhost:8080/MobileWebApp/load-product-by-option?list-option=${nameOption}&page=${currentPage == tongSoTrang? 1: currentPage +1}"
+												href="${pageContext.request.contextPath}/load-product-by-option?list-option=${nameOption}&page=${currentPage == tongSoTrang? 1: currentPage +1}"
 												aria-label="Next"><i class="fa fa-angle-right"
 													style="font-size: 16px;"></i></li>
 										</ul>
@@ -1117,16 +1117,16 @@ button[type="submit"] i {
 									<div class="st-pagination">
 										<ul class="pagination">
 											<li><a
-												href="http://localhost:8080/MobileWebApp/SearchOnBox?searchOnBox=${required}&page=${currentPage == 1? tongSoTrang: currentPage -1}"
+												href="${pageContext.request.contextPath}/SearchOnBox?searchOnBox=${required}&page=${currentPage == 1? tongSoTrang: currentPage -1}"
 												aria-label="previous"><i class="fa fa-angle-left"
 													style="font-size: 16px;"></i></a> <!-- Dùng JSTL để lặp qua các trang -->
 												<c:forEach var="i" begin="1" end="${tongSoTrang}">
 													<li class="${currentPage == i ? 'active' : ''}"><a
-														href="http://localhost:8080/MobileWebApp/SearchOnBox?searchOnBox=${required}&page=${i}"
+														href="${pageContext.request.contextPath}/SearchOnBox?searchOnBox=${required}&page=${i}"
 														onclick="setActive(this)">${i}</a></li>
 												</c:forEach>
 											<li><a
-												href="http://localhost:8080/MobileWebApp/SearchOnBox?searchOnBox=${required}&page=${currentPage == tongSoTrang? 1: currentPage +1}"
+												href="${pageContext.request.contextPath}/SearchOnBox?searchOnBox=${required}&page=${currentPage == tongSoTrang? 1: currentPage +1}"
 												aria-label="Next"><i class="fa fa-angle-right"
 													style="font-size: 16px;"></i></li>
 										</ul>
