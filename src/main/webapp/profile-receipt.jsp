@@ -207,10 +207,10 @@
 							</c:if>
 							<c:if test="${not empty sessionScope.khachHang}">
 								<li><a
-									href="http://localhost:8080/MobileWebApp/account-login?userID=${sessionScope.khachHang.userID}"
+									href="${pageContext.request.contextPath}/account-login?userID=${sessionScope.khachHang.userID}"
 									class="title hidden-xs">Hi <c:out
 											value="${sessionScope.khachHang.userName}" /></a>|</li>
-								<li><a href="http://localhost:8080/MobileWebApp/dang-xuat"
+								<li><a href="${pageContext.request.contextPath}/dang-xuat"
 									class="title hidden-xs">Log out </a></li>
 								<li><a href="load-page-favorite-list?userID=${sessionScope.khachHang.userID}"><i class="fa fa-heart"></i><sup class="cart-quantity">${soLuongSanPhamLike}</sup></a></li>
 								<li><a href="go-to-cart" class="title"><i
@@ -233,7 +233,7 @@
 						<div id="navigation">
 							<ul>
 								<li class="active"><a href="LoadDataMain">Trang chủ</a></li>
-								<li><a href="http://localhost:8080/MobileWebApp/load-product?page=1">Điện thoại</a></li>
+								<li><a href="${pageContext.request.contextPath}/load-product?page=1">Điện thoại</a></li>
                                 <li class="has-sub"><a href="load-accessories">Phụ kiện</a>
                                     <ul>
                                         <li><a href="load-accessories?type=op-lung&page=1">Ốp lưng - Bao da</a></li>
@@ -246,7 +246,7 @@
                                 </li>
 								<li><a href="go-to-blog">Thông tin</a></li>
 								<li><a href="go-to-about">Bài viết</a></li>
-								<li><a href="http://localhost:8080/MobileWebApp/go-to-contactus">Liên hệ, hỗ trợ</a></li>
+								<li><a href="${pageContext.request.contextPath}/go-to-contactus">Liên hệ, hỗ trợ</a></li>
 							</ul>
 						</div>
 					</div>
@@ -284,29 +284,36 @@
                         </div>
                         <div class="side-bar-content">
                             <ul>
-                                <a href="http://localhost:8080/MobileWebApp/account-login?userID=${sessionScope.khachHang.userID}"><li class="slide-bar "><i class="fa fa-edit"></i><span>Thông tin tài khoản</span></li></a>
+                                <a href="${pageContext.request.contextPath}/account-login?userID=${sessionScope.khachHang.userID}"><li class="slide-bar "><i class="fa fa-edit"></i><span>Thông tin tài khoản</span></li></a>
                                 <a href="go-to-don-hang?page=1"><li class="slide-bar active"><i class="fas fa-money-check"></i><span>Quản lý đơn hàng</span></li></a>
                                 <a href="go-to-phan-hoi?page=1"><li class="slide-bar"><i
 										class="fas fa-money-check"></i><span>Phản hồi</span></li></a>
 								<a href="go-to-so-du?userID=${sessionScope.khachHang.userID}"><li class="slide-bar"><i
 										class="fas fa-money-check"></i><span>Số dư</span></li></a>
                                 <!-- <a href="address-deliver.html"><li class="slide-bar"><i class="fas fa-map-marker-alt"></i><span> Địa chỉ nhận hàng</span></li></a> -->
-                                <a href="http://localhost:8080/MobileWebApp/profile-reset-password?userID=${sessionScope.khachHang.userID}"> <li class="slide-bar"><i class="fas fa-lock"></i><span> Đổi mật khẩu</span></li></a>
+                                <a href="${pageContext.request.contextPath}/profile-reset-password?userID=${sessionScope.khachHang.userID}"> <li class="slide-bar"><i class="fas fa-lock"></i><span> Đổi mật khẩu</span></li></a>
+                                <a href="${pageContext.request.contextPath}/security-profile.jsp"><li class="slide-bar"><i class="fas fa-key"></i><span>Quản lý khóa bảo mật</span></li></a>
                             </ul>
                         </div>
                     </div>
                     <div class="right-container">
                         <h3 class="title-content">Đơn hàng đã đặt</h3>
+                        <c:if test="${not empty notify}">
+                            <div class="alert alert-warning" style="margin-bottom: 20px; padding: 15px; border-radius: 6px; background-color: #fff3cd; color: #856404; border: 1px solid #ffeeba;">
+                                <strong>Thông báo:</strong> ${notify}
+                            </div>
+                        </c:if>
                         <div class="receipt-infor">
                            <c:if test="${kiemTra == true}">
                             <table class="table table-hover">
                                 <thead class="thead-light">
                                   <tr>
                                     <th scope="col">Mã đơn hàng</th>
-                                    <th scope="col">Tên khách hàng</th>
+                                    <th scope="col" style="min-width: 180px;">Tên khách hàng</th>
                                     <th scope="col">Ngày đặt hàng</th>
                                     <th scope="col">Chi tiết đơn hàng</th>
-                                     <th scope="col">Tình trạng đơn hàng</th>
+                                    <th scope="col">Tình trạng đơn hàng</th>
+                                    <th scope="col">Trạng thái Ký</th>
                                   </tr>
                                 </thead>
                                 <tbody>
@@ -317,6 +324,12 @@
                                     <td>${orders.ordersDate}</td>
                                     <td><a href="xem-chi-tiet-don-hang?ordersID=${orders.orderID}">Xem chi tiết</a></td>
                                     <td>${orders.status}</td>
+                                    <td style="display: flex; align-items: center; gap: 10px; border-bottom: none;">
+                                    	<span class="${orders.signatureStatus == 'Đã ký xác nhận' ? 'text-success' : 'text-danger'}" style="margin: 0; white-space: nowrap;">${orders.signatureStatus}</span>
+                                    	<c:if test="${orders.signatureStatus == 'Chưa ký xác nhận' && (orders.status.equalsIgnoreCase('đang chờ') || orders.status == 'Chưa đóng gói')}">
+                                    		<button class="btn btn-warning" style="white-space: nowrap; padding: 2px 6px; font-size: 11px; line-height: 1.5; border-radius: 3px;" onclick="openSignatureForOrder('${orders.orderID}', '${orders.totalAmount}', '${orders.shippingAddress}', '${orders.phone}', '${orders.ordersDate}', '${orders.status}')">Ký ngay</button>
+                                    	</c:if>
+                                    </td>
                                   </tr>
                                   </c:forEach>
                                 </tbody>
@@ -330,18 +343,19 @@
 									<div class="st-pagination">
 										<ul class="pagination">
 											<li><a
-												href="http://localhost:8080/MobileWebApp/go-to-don-hang?page=${currentPage == 1? tongSoTrang: currentPage - 1}"
+												href="${pageContext.request.contextPath}/go-to-don-hang?page=${currentPage == 1? tongSoTrang: currentPage - 1}"
 												aria-label="previous"><i class="fa fa-angle-left"
-													style="font-size: 16px;"></i></a> <!-- Dùng JSTL để lặp qua các trang -->
+													style="font-size: 16px;"></i></a></li>
+												<!-- Dùng JSTL để lặp qua các trang -->
 												<c:forEach var="i" begin="1" end="${tongSoTrang}">
 													<li class="${currentPage == i ? 'active' : ''}"><a
-														href="http://localhost:8080/MobileWebApp/go-to-don-hang?page=${i}"
+														href="${pageContext.request.contextPath}/go-to-don-hang?page=${i}"
 														onclick="setActive(this)">${i}</a></li>
 												</c:forEach>
 											<li><a
-												href="http://localhost:8080/MobileWebApp/go-to-don-hang?page=${currentPage == tongSoTrang? 1: currentPage + 1}"
+												href="${pageContext.request.contextPath}/go-to-don-hang?page=${currentPage == tongSoTrang? 1: currentPage + 1}"
 												aria-label="Next"><i class="fa fa-angle-right"
-													style="font-size: 16px;"></i></li>
+													style="font-size: 16px;"></i></a></li>
 										</ul>
 									</div>
 								</div>
@@ -500,7 +514,26 @@
 	        suggestionsList.classList.remove("active");
 	    }
 	}); 
+	
+	// Open signature modal from profile-receipt for a specific order
+	function openSignatureForOrder(orderID, totalAmount, shippingAddress, phone, orderDate, status) {
+		const dataStr = "OrderID: " + orderID + "|Total: " + totalAmount + "|Address: " + shippingAddress + "|Phone: " + phone + "|Date: " + orderDate + "|Status: " + status;
+		// Set a global variable or hidden input to know which order we are signing
+		window.currentSigningOrderID = orderID;
+		
+		// If signature-modal is included, it defines openSignatureTool, but we need to override the data
+		// Let's call the original function or just set it
+		const orderDataField = document.getElementById('orderDataString');
+		if(orderDataField) {
+			orderDataField.value = dataStr;
+		}
+		const sigModal = document.getElementById('signatureToolModal');
+		if(sigModal) {
+			sigModal.style.display = 'flex';
+		}
+	}
 	</script>
+	<jsp:include page="signature-modal.jsp" />
 </body>
 
 

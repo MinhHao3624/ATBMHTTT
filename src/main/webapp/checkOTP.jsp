@@ -1,4 +1,4 @@
-<%@page import="com.projectttweb.webphone.model.User"%>
+﻿<%@page import="com.projectttweb.webphone.model.User"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
@@ -213,10 +213,10 @@
 							</c:if>
 							<c:if test="${not empty sessionScope.khachHang}">
 								<li><a
-									href="http://localhost:8080/MobileWebApp/account-login?userID=${sessionScope.khachHang.userID}"
+									href="${pageContext.request.contextPath}/account-login?userID=${sessionScope.khachHang.userID}"
 									class="title hidden-xs">Hi <c:out
 											value="${sessionScope.khachHang.userName}" /></a>|</li>
-								<li><a href="http://localhost:8080/MobileWebApp/dang-xuat"
+								<li><a href="${pageContext.request.contextPath}/dang-xuat"
 									class="title hidden-xs">Log out </a></li>
 								<li><a
 									href="load-page-favorite-list?userID=${sessionScope.khachHang.userID}">
@@ -239,7 +239,7 @@
 						<div id="navigation">
 							<ul>
 								<li class="active"><a href="LoadDataMain">Trang chủ</a></li>
-								<li><a href="http://localhost:8080/MobileWebApp/load-product?page=1">Điện thoại</a></li>
+								<li><a href="${pageContext.request.contextPath}/load-product?page=1">Điện thoại</a></li>
 								<li class="has-sub"><a href="load-accessories">Phụ kiện</a>
 									<ul>
 										<li><a href="load-accessories?type=op-lung&page=1">Ốp lưng - Bao da</a></li>
@@ -253,7 +253,7 @@
 								<li><a href="go-to-blog">Thông tin</a></li>
 								<li><a href="go-to-about">Bài viết</a></li>
 								<li><a
-									href="http://localhost:8080/MobileWebApp/go-to-contactus">Liên
+									href="${pageContext.request.contextPath}/go-to-contactus">Liên
 										hệ, hỗ trợ</a></li>
 							</ul>
 						</div>
@@ -336,7 +336,7 @@
 				<button type="submit" class="submit-email mb20">Tiếp tục</button>
 			</form>
 			<a
-				href="<%="http://localhost:8080/MobileWebApp/send-mail?email=" + user.getEmail()%>"
+				href="<%="${pageContext.request.contextPath}/send-mail?email=" + user.getEmail()%>"
 				class="text-blue">Gửi lại mã OTP</a>
 		</div>
 	</div>

@@ -205,10 +205,10 @@
 							</c:if>
 							<c:if test="${not empty sessionScope.khachHang}">
 								<li><a
-									href="http://localhost:8080/MobileWebApp/account-login?userID=${sessionScope.khachHang.userID}"
+									href="${pageContext.request.contextPath}/account-login?userID=${sessionScope.khachHang.userID}"
 									class="title hidden-xs">Hi <c:out
 											value="${sessionScope.khachHang.userName}" /></a>|</li>
-								<li><a href="http://localhost:8080/MobileWebApp/dang-xuat"
+								<li><a href="${pageContext.request.contextPath}/dang-xuat"
 									class="title hidden-xs">Log out </a></li>
 								<li><a href="load-page-favorite-list?userID=${sessionScope.khachHang.userID}"><i class="fa fa-heart"></i><sup class="cart-quantity">${soLuongSanPhamLike}</sup></a></li>
 								<li><a href="go-to-cart" class="title"><i
@@ -231,7 +231,7 @@
 						<div id="navigation">
 							<ul>
 								<li class="active"><a href="LoadDataMain">Trang chủ</a></li>
-								<li><a href="http://localhost:8080/MobileWebApp/load-product?page=1">Điện thoại</a></li>
+								<li><a href="${pageContext.request.contextPath}/load-product?page=1">Điện thoại</a></li>
                                 <li class="has-sub"><a href="load-accessories">Phụ kiện</a>
                                     <ul>
                                         <li><a href="load-accessories?type=op-lung&page=1">Ốp lưng - Bao da</a></li>
@@ -244,7 +244,7 @@
                                 </li>
 								<li><a href="go-to-blog">Thông tin</a></li>
 								<li><a href="go-to-about">Bài viết</a></li>
-								<li><a href="http://localhost:8080/MobileWebApp/go-to-contactus">Liên hệ, hỗ trợ</a></li>
+								<li><a href="${pageContext.request.contextPath}/go-to-contactus">Liên hệ, hỗ trợ</a></li>
 							</ul>
 						</div>
 					</div>
@@ -282,14 +282,15 @@
                         </div>
                         <div class="side-bar-content">
                             <ul>
-                                <a href="http://localhost:8080/MobileWebApp/account-login?userID=${sessionScope.khachHang.userID}"><li class="slide-bar "><i class="fa fa-edit"></i><span>Thông tin tài khoản</span></li></a>
+                                <a href="${pageContext.request.contextPath}/account-login?userID=${sessionScope.khachHang.userID}"><li class="slide-bar "><i class="fa fa-edit"></i><span>Thông tin tài khoản</span></li></a>
                                 <a href="go-to-don-hang?page=1"><li class="slide-bar active"><i class="fas fa-money-check"></i><span>Quản lý đơn hàng</span></li></a>
                                 <a href="go-to-phan-hoi?page=1"><li class="slide-bar"><i
 										class="fas fa-money-check"></i><span>Phản hồi</span></li></a>
 							    <a href="go-to-so-du?userID=${sessionScope.khachHang.userID}"><li class="slide-bar"><i
 										class="fas fa-money-check"></i><span>Số dư</span></li></a>
                                 <!-- <a href="address-deliver.html"><li class="slide-bar"><i class="fas fa-map-marker-alt"></i><span> Địa chỉ nhận hàng</span></li></a> -->
-                                <a href="http://localhost:8080/MobileWebApp/profile-reset-password?userID=${sessionScope.khachHang.userID}"> <li class="slide-bar"><i class="fas fa-lock"></i><span> Đổi mật khẩu</span></li></a>
+                                <a href="${pageContext.request.contextPath}/profile-reset-password?userID=${sessionScope.khachHang.userID}"> <li class="slide-bar"><i class="fas fa-lock"></i><span> Đổi mật khẩu</span></li></a>
+                                <a href="${pageContext.request.contextPath}/security-profile.jsp"><li class="slide-bar"><i class="fas fa-key"></i><span>Quản lý khóa bảo mật</span></li></a>
                             </ul>
                         </div>
                     </div>
@@ -326,16 +327,16 @@
 									<div class="st-pagination">
 										<ul class="pagination">
 											<li><a
-												href="http://localhost:8080/MobileWebApp/go-to-phan-hoi?page=${currentPage == 1? tongSoTrang: currentPage - 1}"
+												href="${pageContext.request.contextPath}/go-to-phan-hoi?page=${currentPage == 1? tongSoTrang: currentPage - 1}"
 												aria-label="previous"><i class="fa fa-angle-left"
 													style="font-size: 16px;"></i></a> <!-- Dùng JSTL để lặp qua các trang -->
 												<c:forEach var="i" begin="1" end="${tongSoTrang}">
 													<li class="${currentPage == i ? 'active' : ''}"><a
-														href="http://localhost:8080/MobileWebApp/go-to-phan-hoi?page=${i}"
+														href="${pageContext.request.contextPath}/go-to-phan-hoi?page=${i}"
 														onclick="setActive(this)">${i}</a></li>
 												</c:forEach>
 											<li><a
-												href="http://localhost:8080/MobileWebApp/go-to-phan-hoi?page=${currentPage == tongSoTrang? 1: currentPage + 1}"
+												href="${pageContext.request.contextPath}/go-to-phan-hoi?page=${currentPage == tongSoTrang? 1: currentPage + 1}"
 												aria-label="Next"><i class="fa fa-angle-right"
 													style="font-size: 16px;"></i></li>
 										</ul>

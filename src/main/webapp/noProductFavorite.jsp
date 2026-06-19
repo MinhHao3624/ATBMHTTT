@@ -1,4 +1,4 @@
-<%@page import="com.projectttweb.webphone.model.ProductFavorite"%>
+﻿<%@page import="com.projectttweb.webphone.model.ProductFavorite"%>
 <%@page import="java.util.List"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
@@ -207,10 +207,10 @@
 							</c:if>
 							<c:if test="${not empty sessionScope.khachHang}">
 								<li><a
-									href="http://localhost:8080/MobileWebApp/account-login?userID=${sessionScope.khachHang.userID}"
+									href="${pageContext.request.contextPath}/account-login?userID=${sessionScope.khachHang.userID}"
 									class="title hidden-xs">Hi <c:out
 											value="${sessionScope.khachHang.userName}" /></a>|</li>
-								<li><a href="http://localhost:8080/MobileWebApp/dang-xuat"
+								<li><a href="${pageContext.request.contextPath}/dang-xuat"
 									class="title hidden-xs">Log out </a></li>
 								<li><a href="load-page-favorite-list?userID=${sessionScope.khachHang.userID}"><i class="fa fa-heart"></i><sup class="cart-quantity">${soLuongSanPhamLike}</sup></a></li>
 								<li><a href="go-to-cart" class="title"><i
@@ -233,7 +233,7 @@
 						<div id="navigation">
 							<ul>
 								<li class="active"><a href="LoadDataMain">Trang chủ</a></li>
-								<li><a href="http://localhost:8080/MobileWebApp/load-product?page=1">Điện thoại</a></li>
+								<li><a href="${pageContext.request.contextPath}/load-product?page=1">Điện thoại</a></li>
 								<li class="has-sub"><a href="load-accessories">Phụ kiện</a>
 									<ul>
 										<li><a href="load-accessories?type=op-lung&page=1">Ốp lưng - Bao da</a></li>
@@ -246,7 +246,7 @@
 								</li>
 								<li><a href="go-to-blog">Thông tin</a></li>
 								<li><a href="go-to-about">Bài viết</a></li>
-								<li><a href="http://localhost:8080/MobileWebApp/go-to-contactus">Liên hệ, hỗ trợ</a></li>
+								<li><a href="${pageContext.request.contextPath}/go-to-contactus">Liên hệ, hỗ trợ</a></li>
 							</ul>
 						</div>
 					</div>
@@ -284,7 +284,7 @@
 				sách yêu thích</h3>
 			<p style="color: #777;">Hãy khám phá và thêm những sản phẩm bạn
 				yêu thích vào danh sách!</p>
-			<a href="http://localhost:8080/MobileWebApp/load-product?page=1"
+			<a href="${pageContext.request.contextPath}/load-product?page=1"
 				class="btn btn-primary"
 				style="text-decoration: none; color: white; padding: 10px 20px; border-radius: 5px; background-color: #007BFF;">
 				Khám phá sản phẩm </a>

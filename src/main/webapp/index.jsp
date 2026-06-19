@@ -935,7 +935,7 @@
 
 	        // Gửi yêu cầu AJAX
 	        const xhr = new XMLHttpRequest();
-	        xhr.open('POST', '/MobileWebApp/add-to-cart', true);
+	        xhr.open('POST', '${pageContext.request.contextPath}/add-to-cart', true);
 	        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 
 	        xhr.onreadystatechange = function () {

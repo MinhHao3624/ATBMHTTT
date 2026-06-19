@@ -45,6 +45,14 @@ public class CAProxyController extends HttpServlet {
             response.setStatus(targetResponse.statusCode());
             response.setContentType("application/json; charset=UTF-8");
             
+            // Intercept /revoke/ success to reset orders signature status
+            if (pathInfo.startsWith("/revoke/") && method.equalsIgnoreCase("PATCH") && targetResponse.statusCode() == 200) {
+            	com.projectttweb.webphone.model.User user = (com.projectttweb.webphone.model.User) request.getSession().getAttribute("khachHang");
+            	if (user != null) {
+            		new com.projectttweb.webphone.database.OrdersDAO().revokeUserSignatures(user.getUserID());
+            	}
+            }
+
             OutputStream out = response.getOutputStream();
             out.write(targetResponse.body());
             out.flush();
@@ -54,7 +62,9 @@ public class CAProxyController extends HttpServlet {
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Proxy interrupted");
         } catch (Exception e) {
             e.printStackTrace();
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Proxy error: " + e.getMessage());
+            java.io.StringWriter sw = new java.io.StringWriter();
+            e.printStackTrace(new java.io.PrintWriter(sw));
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Proxy error: " + e.toString() + "\n" + sw.toString());
         }
     }
 }
