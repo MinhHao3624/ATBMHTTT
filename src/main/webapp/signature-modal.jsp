@@ -208,7 +208,7 @@
             }
 
             if (errors.length > 0) {
-                alert("Vui lòng kiểm tra lại thông tin:\n- " + errors.join("\n- "));
+                customAlert("Vui lòng kiểm tra lại thông tin:\n- " + errors.join("\n- "));
                 return; // Ngừng, không mở popup ký
             }
         }
@@ -293,7 +293,7 @@
     
     btnSubmitSignature.addEventListener('click', async function() {
         if (!uploadedPrivateKeyContent || !uploadedPublicKeyContent) {
-            alert('Vui lòng tải lên ĐẦY ĐỦ file Private Key và Public Key của bạn trước khi ký!');
+            customAlert('Vui lòng tải lên ĐẦY ĐỦ file Private Key và Public Key của bạn trước khi ký!');
             return;
         }
 
@@ -316,7 +316,7 @@
             });
 
             if (!signRes.ok) {
-                alert('Lỗi ký số: ' + await signRes.text());
+                customAlert('Lỗi ký số: ' + await signRes.text());
                 throw new Error('Sign error');
             }
 
@@ -336,7 +336,7 @@
             });
 
             if (!verifyRes.ok) {
-                alert('Lỗi khi gọi API xác thực: ' + await verifyRes.text());
+                customAlert('Lỗi khi gọi API xác thực: ' + await verifyRes.text());
                 throw new Error('Verify API error');
             }
 
@@ -345,7 +345,7 @@
             if (isValid === true) {
                 // 3. Gửi thông tin về backend để lưu db
                 if(!window.currentSigningOrderID) {
-                    alert('Lỗi: Không xác định được mã đơn hàng để ký!');
+                    customAlert('Lỗi: Không xác định được mã đơn hàng để ký!');
                     return;
                 }
                 
@@ -359,13 +359,13 @@
                 	})
                 });
                 if(saveRes.ok) {
-                	alert('Ký và xác thực chữ ký thành công!');
+                	customAlert('Ký và xác thực chữ ký thành công!');
                 	location.reload(); // reload to show updated status
                 } else {
-                	alert('Lỗi lưu trữ chữ ký: ' + await saveRes.text());
+                	customAlert('Lỗi lưu trữ chữ ký: ' + await saveRes.text());
                 }
             } else {
-                alert('Chữ ký không hợp lệ hoặc chứng chỉ đã bị thu hồi. Từ chối ký!');
+                customAlert('Chữ ký không hợp lệ hoặc chứng chỉ đã bị thu hồi. Từ chối ký!');
             }
         } catch (e) {
             console.error(e);
@@ -374,4 +374,19 @@
             btnSubmitSignature.disabled = false;
         }
     });
+</script>
+
+<!-- Custom Alert Modal -->
+<div id="customAlertOverlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); z-index: 10000; align-items: center; justify-content: center;">
+    <div style="background: white; padding: 25px; border-radius: 8px; width: 350px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
+        <div id="customAlertMessage" style="margin-bottom: 25px; font-size: 16px; color: #333; line-height: 1.4; white-space: pre-wrap;"></div>
+        <button onclick="document.getElementById('customAlertOverlay').style.display='none'" style="padding: 10px 25px; background: #3742fa; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 15px; font-weight: bold;">Đóng</button>
+    </div>
+</div>
+
+<script>
+    function customAlert(msg) {
+        document.getElementById('customAlertMessage').innerText = msg;
+        document.getElementById('customAlertOverlay').style.display = 'flex';
+    }
 </script>

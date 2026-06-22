@@ -319,7 +319,7 @@
                 
                 if (!regRes.ok) {
                     const err = await regRes.text();
-                    alert("Đăng ký thất bại: " + err);
+                    customAlert("Đăng ký thất bại: " + err);
                     throw new Error("Register failed");
                 }
                 
@@ -356,11 +356,11 @@
             btnSendPubToMail.addEventListener('click', function() {
                 const storedPubKey = localStorage.getItem('ca_public_key');
                 if(!storedPubKey) {
-                    alert('Lỗi: Bạn chưa tạo khóa bảo vệ nào trên trình duyệt này!');
+                    customAlert('Lỗi: Bạn chưa tạo khóa bảo vệ nào trên trình duyệt này!');
                     return;
                 }
                 downloadFile('recovered_public_key.pem', storedPubKey);
-                alert('Đã tải thành công Public Key đang sử dụng!');
+                customAlert('Đã tải thành công Public Key đang sử dụng!');
             });
         }
 
@@ -378,11 +378,11 @@
         btnUpdateKey.addEventListener('click', async function() {
             const serial = localStorage.getItem('ca_serial_number');
             if (!serial) {
-                alert("Bạn chưa có khóa bảo vệ nào để cập nhật!");
+                customAlert("Bạn chưa có khóa bảo vệ nào để cập nhật!");
                 return;
             }
             if (!fileOldPri.files || fileOldPri.files.length === 0) {
-                alert("Vui lòng nạp Private Key cũ để chứng minh danh tính!");
+                customAlert("Vui lòng nạp Private Key cũ để chứng minh danh tính!");
                 return;
             }
 
@@ -396,7 +396,7 @@
                 });
                 
                 if (!res.ok) {
-                    alert("Lỗi khi thu hồi khóa cũ: " + await res.text());
+                    customAlert("Lỗi khi thu hồi khóa cũ: " + await res.text());
                     return;
                 }
 
@@ -404,7 +404,7 @@
                 localStorage.removeItem('ca_serial_number');
                 localStorage.removeItem('ca_public_key');
 
-                alert("Đã thu hồi khóa cũ thành công! Đang tiến hành tạo khóa mới...");
+                customAlert("Đã thu hồi khóa cũ thành công! Đang tiến hành tạo khóa mới...");
 
                 // 2. Tạo khóa mới
                 const genRes = await fetch('${pageContext.request.contextPath}/ca-proxy/generate-key', {
@@ -433,7 +433,7 @@
                 localStorage.setItem('ca_serial_number', certData.serialNumber);
                 localStorage.setItem('ca_public_key', generatedPublicKey);
 
-                alert("Tạo khóa mới thành công! Vui lòng tải khóa mới về.");
+                customAlert("Tạo khóa mới thành công! Vui lòng tải khóa mới về.");
                 downloadKeyArea.style.display = 'block';
                 document.getElementById('keyStatusText').className = 'sec-status status-active';
                 document.getElementById('keyStatusText').innerText = 'Tài khoản của bạn đang được bảo vệ bằng chữ ký số';
@@ -442,7 +442,7 @@
 
             } catch(e) {
                 console.error(e);
-                alert("Lỗi: " + e.message);
+                customAlert("Lỗi: " + e.message);
             } finally {
                 btnUpdateKey.disabled = false;
                 btnUpdateKey.innerText = 'Xác Thực & Tạo Khóa Mới';
@@ -454,26 +454,63 @@
         btnReportLostPri.addEventListener('click', async function() {
             const serial = localStorage.getItem('ca_serial_number');
             if(!serial) {
-                alert("Không tìm thấy Serial Number của khóa trong trình duyệt. Không thể hủy!");
+                customAlert("Không tìm thấy Serial Number của khóa trong trình duyệt. Không thể hủy!");
                 return;
             }
-            if(confirm("Bạn có chắc chắn muốn hủy khóa này không? Khóa cũ sẽ không còn hiệu lực.")) {
+            customConfirm("Bạn có chắc chắn muốn hủy khóa này không? Khóa cũ sẽ không còn hiệu lực.", async function() {
                 try {
                     const res = await fetch('${pageContext.request.contextPath}/ca-proxy/revoke/' + serial, {
                         method: 'PATCH'
                     });
                     if(res.ok) {
-                        alert("Đã hủy khóa thành công!");
+                        customAlert("Đã hủy khóa thành công!");
                         localStorage.removeItem('ca_serial_number');
                         localStorage.removeItem('ca_public_key');
                         location.reload();
                     } else {
-                        alert("Lỗi khi hủy khóa: " + await res.text());
+                        customAlert("Lỗi khi hủy khóa: " + await res.text());
                     }
                 } catch(e) {
                     console.error(e);
-                    alert("Lỗi kết nối Server");
+                    customAlert("Lỗi kết nối Server");
                 }
-            }
+            });
         });
+    </script>
+
+    <!-- Custom Alert Modal -->
+    <div id="customAlertOverlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); z-index: 10000; align-items: center; justify-content: center;">
+        <div style="background: white; padding: 25px; border-radius: 8px; width: 350px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
+            <div id="customAlertMessage" style="margin-bottom: 25px; font-size: 16px; color: #333; line-height: 1.4;"></div>
+            <button onclick="document.getElementById('customAlertOverlay').style.display='none'" style="padding: 10px 25px; background: #3742fa; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 15px; font-weight: bold;">Đóng</button>
+        </div>
+    </div>
+
+    <!-- Custom Confirm Modal -->
+    <div id="customConfirmOverlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); z-index: 10000; align-items: center; justify-content: center;">
+        <div style="background: white; padding: 25px; border-radius: 8px; width: 350px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
+            <div id="customConfirmMessage" style="margin-bottom: 25px; font-size: 16px; color: #333; line-height: 1.4;"></div>
+            <div style="display: flex; justify-content: center; gap: 15px;">
+                <button id="customConfirmOk" style="padding: 10px 25px; background: #ff4757; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 15px; font-weight: bold;">Đồng ý</button>
+                <button onclick="document.getElementById('customConfirmOverlay').style.display='none'" style="padding: 10px 25px; background: #a4b0be; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 15px; font-weight: bold;">Hủy</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function customAlert(msg) {
+            document.getElementById('customAlertMessage').innerText = msg;
+            document.getElementById('customAlertOverlay').style.display = 'flex';
+        }
+
+        function customConfirm(msg, onConfirm) {
+            document.getElementById('customConfirmMessage').innerText = msg;
+            document.getElementById('customConfirmOverlay').style.display = 'flex';
+            document.getElementById('customConfirmOk').onclick = function() {
+                document.getElementById('customConfirmOverlay').style.display = 'none';
+                if (typeof onConfirm === 'function') {
+                    onConfirm();
+                }
+            };
+        }
     </script>
